@@ -46,7 +46,18 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 .btn-img{flex:1;min-width:80px;padding:12px;border-radius:6px;font-family:'Exo 2';font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:1px solid rgba(64,200,255,0.28);background:rgba(26,127,255,0.1);color:var(--white);}
 .btn-img:hover{background:rgba(64,200,255,0.15);}
 
-@media print{body::after,nav,#space-canvas,.action-row,.panel,.page-header{display:none!important;}body{background:white;}.editor{display:block;}.preview-panel{border:none;background:0;padding:0;}}.doc{width:620px;min-width:620px;background:#fff;font-family:'DM Sans',sans-serif;color:#111;box-shadow:0 16px 60px rgba(0,0,0,0.7);font-size:9.5px;}
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: white !important; margin: 0 !important; padding: 0 !important; }
+  #space-canvas, canvas, .scanlines { display: none !important; }
+  nav, .action-row, .panel, .page-header { display: none !important; }
+  body::after { display: none !important; }
+  .page { padding: 0 !important; }
+  .editor { display: block !important; max-width: 100% !important; }
+  .preview-panel { border: none !important; background: transparent !important; padding: 0 !important; box-shadow: none !important; backdrop-filter: none !important; }
+  .preview-panel h3 { display: none !important; }
+  .doc-scroll { overflow: visible !important; }
+}.doc{width:620px;min-width:620px;background:#fff;font-family:'DM Sans',sans-serif;color:#111;box-shadow:0 16px 60px rgba(0,0,0,0.7);font-size:9.5px;}
 .doc-hdr{padding:20px 28px;}.doc-hdr-title{font-size:19px;font-weight:700;color:#fff;margin-bottom:3px;}.doc-hdr-sub{font-size:9px;color:rgba(255,255,255,0.6);letter-spacing:1px;}
 .doc-bar{height:3px;}.doc-body{padding:22px 28px;}
 .doc-sec{margin-bottom:16px;}.doc-sec-title{font-size:9.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;padding-bottom:4px;border-bottom:1px solid rgba(0,0,0,0.08);}
@@ -91,8 +102,8 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 </div>
 <div class="preview-panel"><h3>Live Preview</h3><div class="doc-scroll"><div id="emp-doc"></div></div>
 <div class="action-row">
-  <button class="btn-p" onclick="window.print()">🖨 Print</button>
-  <button class="btn-d" onclick="downloadPDF('emp-doc')">⬇ PDF</button>
+  <button class="btn-print" onclick="window.print()">🖨 Print</button>
+  <button class="btn-dl" onclick="dlPDF()">⬇ PDF</button>
   <button class="btn-img" onclick="downloadPNG('emp-doc')">🖼 PNG</button>
   <button class="btn-img" onclick="downloadJPEG('emp-doc')">📷 JPEG</button>
 </div>

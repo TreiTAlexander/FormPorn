@@ -160,13 +160,19 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
   text-transform:uppercase;
 }
 
-@media print{
-  body::after,nav,#space-canvas,.action-row,.panel,.page-header{display:none!important;}
-  body{background:white;}
-  .editor{display:block;}
-  .preview-panel{border:none;background:transparent;padding:0;}
-  .placard{box-shadow:none;}
+@media print {
+  * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  body { background: white !important; margin: 0 !important; padding: 0 !important; }
+  #space-canvas, canvas, .scanlines { display: none !important; }
+  nav, .action-row, .panel, .page-header { display: none !important; }
+  body::after { display: none !important; }
+  .page { padding: 0 !important; }
+  .editor { display: block !important; max-width: 100% !important; }
+  .preview-panel { border: none !important; background: transparent !important; padding: 0 !important; box-shadow: none !important; backdrop-filter: none !important; }
+  .preview-panel h3 { display: none !important; }
+  .doc-scroll { overflow: visible !important; }
 }
+.btn-img{flex:1;padding:12px;border-radius:6px;font-family:'Exo 2';font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:1px solid rgba(64,200,255,0.25);background:rgba(26,127,255,0.08);color:var(--white);}
 </style>
 </head>
 <body>
@@ -253,9 +259,11 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
         </div>
       </div>
       <div class="action-row">
-        <button class="btn-print" onclick="window.print()">🖨 Print</button>
-        <button class="btn-dl" onclick="dlPDF()">⬇ Download PDF</button>
-      </div>
+  <button class="btn-print" onclick="window.print()">🖨 Print</button>
+  <button class="btn-dl" onclick="dlPDF()">⬇ PDF</button>
+  <button class="btn-img" onclick="downloadPNG('placard-doc')">🖼 PNG</button>
+  <button class="btn-img" onclick="downloadJPEG('placard-doc')">📷 JPEG</button>
+</div>
     </div>
 
   </div>
@@ -366,21 +374,42 @@ function update(){
 </div>`;
 }
 
-function dlPDF(){
-  const el=document.getElementById('placard-doc');
-  const w=window.open('','_blank');
-  w.document.write(`<!DOCTYPE html><html><head><title>Temporary Placard</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;700;900&family=Barlow+Condensed:wght@900&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
-<style>
-body{margin:0;padding:60px;background:#c8c8c8;display:flex;justify-content:center;align-items:center;min-height:100vh;}
-@media print{body{padding:20px;background:white;}}
-</style></head><body>`);
-  w.document.write(el.outerHTML);
-  w.document.write('</body></html>');
-  w.document.close();w.focus();setTimeout(()=>w.print(),900);
-}
+function dlPDF() { window.print(); }
 
 update();
+
+function dlPDF() { window.print(); }
+function downloadPDF(id) { window.print(); }
+function downloadPNG(docId) {
+  var el = document.getElementById(docId);
+  if (!el) { alert('Generate a document first.'); return; }
+  if (typeof html2canvas === 'undefined') {
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = function() { _capPNG(el); };
+    document.head.appendChild(s);
+  } else { _capPNG(el); }
+}
+function _capPNG(el) {
+  html2canvas(el, {scale:3,useCORS:true,allowTaint:true,backgroundColor:'#ffffff',logging:false}).then(function(c){
+    var a=document.createElement('a');a.download='formporn.png';a.href=c.toDataURL('image/png',1.0);a.click();
+  }).catch(function(){ alert('PNG failed. Use PDF instead.'); });
+}
+function downloadJPEG(docId) {
+  var el = document.getElementById(docId);
+  if (!el) { alert('Generate a document first.'); return; }
+  if (typeof html2canvas === 'undefined') {
+    var s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+    s.onload = function() { _capJPG(el); };
+    document.head.appendChild(s);
+  } else { _capJPG(el); }
+}
+function _capJPG(el) {
+  html2canvas(el, {scale:2,useCORS:true,allowTaint:true,backgroundColor:'#ffffff',logging:false}).then(function(c){
+    var a=document.createElement('a');a.download='formporn.jpg';a.href=c.toDataURL('image/jpeg',0.95);a.click();
+  }).catch(function(){ alert('JPEG failed. Use PDF instead.'); });
+}
 </script>
 </body>
 </html>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://formporn.app/</loc><priority>1.0</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://formporn.app/pricing.html</loc><priority>0.9</priority></url>
+  <url><loc>https://formporn.app/dashboard.html</loc><priority>0.8</priority></url>
+  <url><loc>https://formporn.app/faq.html</loc><priority>0.8</priority></url>
+  <url><loc>https://formporn.app/contact.html</loc><priority>0.7</priority></url>
+  <url><loc>https://formporn.app/terms.html</loc><priority>0.5</priority></url>
+  <url><loc>https://formporn.app/privacy.html</loc><priority>0.5</priority></url>
+  <url><loc>https://formporn.app/refund.html</loc><priority>0.5</priority></url>
+  <url><loc>https://formporn.app/acceptable-use.html</loc><priority>0.5</priority></url>
+  <url><loc>https://formporn.app/paystub-editor.html</loc><priority>0.8</priority></url>
+  <url><loc>https://formporn.app/resume-classic.html</loc><priority>0.8</priority></url>
+  <url><loc>https://formporn.app/nda-editor.html</loc><priority>0.7</priority></url>
+  <url><loc>https://formporn.app/invoice-editor.html</loc><priority>0.7</priority></url>
+</urlset>

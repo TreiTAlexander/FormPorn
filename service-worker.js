@@ -1,13 +1,16 @@
-const CACHE = 'formporn-v1';
-const ASSETS = [
+const CACHE = 'formporn-v2';
+const CORE = [
   '/',
   '/index.html',
-  '/manifest.json'
+  '/manifest.json',
+  '/pricing.html',
+  '/faq.html',
+  '/contact.html'
 ];
 
 self.addEventListener('install', e => {
   e.waitUntil(
-    caches.open(CACHE).then(c => c.addAll(ASSETS))
+    caches.open(CACHE).then(c => c.addAll(CORE))
   );
   self.skipWaiting();
 });

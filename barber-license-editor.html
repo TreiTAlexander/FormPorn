@@ -40,6 +40,10 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 .action-row{display:flex;gap:10px;margin-top:14px;}
 .btn-print{flex:1;padding:12px;border-radius:6px;font-family:'Exo 2';font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:1px solid rgba(64,200,255,0.28);background:0;color:var(--cyan);}
 .btn-dl{flex:1;padding:12px;border-radius:6px;font-family:'Exo 2';font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--black);box-shadow:0 4px 20px rgba(255,212,56,0.25);}
+
+.btn-img{flex:1;min-width:80px;padding:12px;border-radius:6px;font-family:'Exo 2';font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:1px solid rgba(64,200,255,0.28);background:rgba(26,127,255,0.1);color:var(--white);}
+.btn-img:hover{background:rgba(64,200,255,0.15);}
+
 @media print{body::after,nav,#space-canvas,.action-row,.panel,.page-header{display:none!important;}body{background:white;}.editor{display:block;}.preview-panel{border:none;background:0;padding:0;}}
 
 
@@ -169,7 +173,12 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 <h3>Live Preview</h3>
 <p class="preview-hint">💡 After uploading, drag the seal/logo to reposition it anywhere on the document.</p>
 <div class="doc-scroll"><div id="barber-doc"></div></div>
-<div class="action-row"><button class="btn-print" onclick="window.print()">🖨 Print</button><button class="btn-dl" onclick="dlPDF()">⬇ Download PDF</button></div>
+<div class="action-row">
+  <button class="btn-p" onclick="window.print()">🖨 Print</button>
+  <button class="btn-d" onclick="downloadPDF('barber-doc')">⬇ PDF</button>
+  <button class="btn-img" onclick="downloadPNG('barber-doc')">🖼 PNG</button>
+  <button class="btn-img" onclick="downloadJPEG('barber-doc')">📷 JPEG</button>
+</div>
 </div>
 </div></div>
 
@@ -206,12 +215,13 @@ function makeDraggable(el){
   document.addEventListener('touchend',()=>dragging=false);
 }
 
-function dlPDF(){
-  const el=document.getElementById('barber-doc');
-  const w=window.open('','_blank');
-  w.document.write('<!DOCTYPE html><html><head><title>Document</title><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,600;1,400&display=swap" rel="stylesheet"><style>body{margin:0;padding:30px;background:#eee;display:flex;justify-content:center;align-items:flex-start;}@media print{body{padding:0;background:white;}}</style></head><body>');
+function dlPDF(id) {
+  id = id || 'barber-doc';
+  downloadPDF(id);
+}@media print{body{padding:0;background:white;}}</style></head><body>');
   w.document.write(el.outerHTML);
-  w.document.write('</body></html>');
+  w.document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body></html>');
   w.document.close();w.focus();setTimeout(()=>w.print(),900);
 }
 
@@ -291,4 +301,34 @@ function update(){
 }
 
 update();
+
+function downloadPDF(docId) {
+  const el = document.getElementById(docId);
+  if (!el) return;
+  const allStyles = Array.from(document.styleSheets).map(s => {
+    try { return Array.from(s.cssRules).map(r=>r.cssText).join('\n'); } catch(e){ return ''; }
+  }).join('\n');
+  const fontLink = document.querySelector('link[href*="fonts.googleapis"]');
+  const w = window.open('','_blank','width=900,height=700');
+  w.document.write('<!DOCTYPE html><html><head><title>Form Porn</title>');
+  if(fontLink) w.document.write(fontLink.outerHTML);
+  w.document.write('<style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#ddd;display:flex;justify-content:center;padding:30px;}@media print{body{background:white;padding:0;}}' + allStyles + '</style></head><body>');
+  w.document.write(el.outerHTML);
+  w.document.write('<scr'+'ipt>document.fonts.ready.then(()=>{setTimeout(()=>window.print(),1000)});<\/scr'+'ipt></body></html>');
+  w.document.close();
+}
+function downloadPNG(docId) {
+  const el = document.getElementById(docId);
+  if(!el){alert('Generate a document first.');return;}
+  html2canvas(el,{scale:3,useCORS:true,backgroundColor:'#ffffff',logging:false}).then(c=>{
+    const a=document.createElement('a');a.download='formporn.png';a.href=c.toDataURL('image/png',1.0);a.click();
+  }).catch(()=>alert('Try PDF instead.'));
+}
+function downloadJPEG(docId) {
+  const el = document.getElementById(docId);
+  if(!el){alert('Generate a document first.');return;}
+  html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false}).then(c=>{
+    const a=document.createElement('a');a.download='formporn.jpg';a.href=c.toDataURL('image/jpeg',0.95);a.click();
+  }).catch(()=>alert('Try PDF instead.'));
+}
 </script></body></html>

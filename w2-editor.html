@@ -72,9 +72,9 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 <div class="preview-panel"><h3>Live Preview</h3><div class="doc-scroll"><div id="w2-doc"></div></div>
 <div class="action-row">
   <button class="btn-p" onclick="window.print()">🖨 Print</button>
-  <button class="btn-d" onclick="dlPDF('w2-doc')">⬇ PDF</button>
-  <button class="btn-img" onclick="dlPNG('w2-doc')">🖼 PNG</button>
-  <button class="btn-img" onclick="dlJPEG('w2-doc')">📷 JPEG</button>
+  <button class="btn-d" onclick="downloadPDF('w2-doc')">⬇ PDF</button>
+  <button class="btn-img" onclick="downloadPNG('w2-doc')">🖼 PNG</button>
+  <button class="btn-img" onclick="downloadJPEG('w2-doc')">📷 JPEG</button>
 </div>
 </div></div></div>
 <script>const cv=document.getElementById('space-canvas'),ct=cv.getContext('2d');
@@ -165,4 +165,34 @@ function update(){
   <div class="doc-ftr"><span>FORM PORN · W-2 TAX YEAR ${v('f-year')}</span><span>FOR ENTERTAINMENT ONLY</span></div>
 </div>`;
 }
-update();</script></body></html>
+update();
+function downloadPDF(docId) {
+  const el = document.getElementById(docId);
+  if (!el) return;
+  const allStyles = Array.from(document.styleSheets).map(s => {
+    try { return Array.from(s.cssRules).map(r=>r.cssText).join('\n'); } catch(e){ return ''; }
+  }).join('\n');
+  const fontLink = document.querySelector('link[href*="fonts.googleapis"]');
+  const w = window.open('','_blank','width=900,height=700');
+  w.document.write('<!DOCTYPE html><html><head><title>Form Porn</title>');
+  if(fontLink) w.document.write(fontLink.outerHTML);
+  w.document.write('<style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#ddd;display:flex;justify-content:center;padding:30px;}@media print{body{background:white;padding:0;}}' + allStyles + '</style></head><body>');
+  w.document.write(el.outerHTML);
+  w.document.write('<scr'+'ipt>document.fonts.ready.then(()=>{setTimeout(()=>window.print(),1000)});<\/scr'+'ipt></body></html>');
+  w.document.close();
+}
+function downloadPNG(docId) {
+  const el = document.getElementById(docId);
+  if(!el){alert('Generate a document first.');return;}
+  html2canvas(el,{scale:3,useCORS:true,backgroundColor:'#ffffff',logging:false}).then(c=>{
+    const a=document.createElement('a');a.download='formporn.png';a.href=c.toDataURL('image/png',1.0);a.click();
+  }).catch(()=>alert('Try PDF instead.'));
+}
+function downloadJPEG(docId) {
+  const el = document.getElementById(docId);
+  if(!el){alert('Generate a document first.');return;}
+  html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false}).then(c=>{
+    const a=document.createElement('a');a.download='formporn.jpg';a.href=c.toDataURL('image/jpeg',0.95);a.click();
+  }).catch(()=>alert('Try PDF instead.'));
+}
+</script></body></html>

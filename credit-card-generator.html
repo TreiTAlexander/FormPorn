@@ -42,6 +42,10 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 .action-row{display:flex;gap:10px;margin-top:14px;}
 .btn-p{flex:1;padding:12px;border-radius:6px;font-family:'Exo 2';font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:1px solid rgba(64,200,255,0.28);background:0;color:var(--cyan);}
 .btn-d{flex:1;padding:12px;border-radius:6px;font-family:'Exo 2';font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--black);}
+
+.btn-img{flex:1;min-width:80px;padding:12px;border-radius:6px;font-family:'Exo 2';font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:1px solid rgba(64,200,255,0.28);background:rgba(26,127,255,0.1);color:var(--white);}
+.btn-img:hover{background:rgba(64,200,255,0.15);}
+
 @media print{body::after,nav,#space-canvas,.action-row,.panel,.page-header{display:none!important;}body{background:white;}.editor{display:block;}.preview-panel{border:none;background:0;padding:0;}}
 
 /* Card themes */
@@ -123,7 +127,12 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 </div>
 <div class="preview-panel"><h3>Live Preview</h3>
 <div class="doc-scroll"><div class="cc-wrap"><div id="cc-doc"></div></div></div>
-<div class="action-row"><button class="btn-p" onclick="window.print()">🖨 Print</button><button class="btn-d" onclick="dlPDF()">⬇ Download PDF</button></div>
+<div class="action-row">
+  <button class="btn-p" onclick="window.print()">🖨 Print</button>
+  <button class="btn-d" onclick="downloadPDF('cc-doc')">⬇ PDF</button>
+  <button class="btn-img" onclick="downloadPNG('cc-doc')">🖼 PNG</button>
+  <button class="btn-img" onclick="downloadJPEG('cc-doc')">📷 JPEG</button>
+</div>
 </div></div></div>
 <script>
 
@@ -135,7 +144,11 @@ function ini(){st=[];for(let i=0;i<180;i++){const r=Math.random()<0.04?rnd(1.4,2
 function drawBg(t){ct.clearRect(0,0,W,H);const bg=ct.createRadialGradient(W/2,0,0,W/2,H/2,Math.max(W,H));bg.addColorStop(0,'#091230');bg.addColorStop(0.35,'#050818');bg.addColorStop(1,'#02030c');ct.fillStyle=bg;ct.fillRect(0,0,W,H);st.forEach(s=>{const a=s.b*(0.5+0.5*Math.sin(t*s.ts+s.tp));ct.fillStyle='hsla('+s.h+','+s.s+'%,96%,'+a+')';ct.beginPath();ct.arc(s.x,s.y,s.r,0,Math.PI*2);ct.fill();});gd.forEach(g=>{g.x+=g.dx;g.y+=g.dy;if(g.x<-5)g.x=W+5;if(g.x>W+5)g.x=-5;if(g.y<-5)g.y=H+5;if(g.y>H+5)g.y=-5;const a=g.b*(0.4+0.6*Math.sin(t*g.ts+g.tp));ct.fillStyle='rgba(255,218,56,'+a+')';ct.beginPath();ct.arc(g.x,g.y,g.r,0,Math.PI*2);ct.fill();});requestAnimationFrame(drawBg);}
 window.addEventListener('resize',rsz);rsz();requestAnimationFrame(drawBg);
 
-function dlPDF(){const el=document.getElementById('cc-doc');const w=window.open('','_blank');w.document.write('<!DOCTYPE html><html><head><title>Credit Card</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Dancing+Script:wght@600;700&display=swap" rel="stylesheet"><style>body{margin:0;padding:30px;background:#ddd;display:flex;justify-content:center;}@media print{body{padding:0;background:white;}}</style></head><body>');w.document.write(el.outerHTML);w.document.write('</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),900);}
+function dlPDF(id) {
+  id = id || 'cc-doc';
+  downloadPDF(id);
+}@media print{body{padding:0;background:white;}}</style></head><body>');w.document.write(el.outerHTML);w.document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</body></html>');w.document.close();w.focus();setTimeout(()=>w.print(),900);}
 let curTheme='classic',logoURL=null;
 const themes={
   classic:{bg:'linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%)',txt:'#fff',acc:'#ffd438'},
@@ -200,4 +213,34 @@ function update(){
 </div>`;
 }
 update();
+
+function downloadPDF(docId) {
+  const el = document.getElementById(docId);
+  if (!el) return;
+  const allStyles = Array.from(document.styleSheets).map(s => {
+    try { return Array.from(s.cssRules).map(r=>r.cssText).join('\n'); } catch(e){ return ''; }
+  }).join('\n');
+  const fontLink = document.querySelector('link[href*="fonts.googleapis"]');
+  const w = window.open('','_blank','width=900,height=700');
+  w.document.write('<!DOCTYPE html><html><head><title>Form Porn</title>');
+  if(fontLink) w.document.write(fontLink.outerHTML);
+  w.document.write('<style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#ddd;display:flex;justify-content:center;padding:30px;}@media print{body{background:white;padding:0;}}' + allStyles + '</style></head><body>');
+  w.document.write(el.outerHTML);
+  w.document.write('<scr'+'ipt>document.fonts.ready.then(()=>{setTimeout(()=>window.print(),1000)});<\/scr'+'ipt></body></html>');
+  w.document.close();
+}
+function downloadPNG(docId) {
+  const el = document.getElementById(docId);
+  if(!el){alert('Generate a document first.');return;}
+  html2canvas(el,{scale:3,useCORS:true,backgroundColor:'#ffffff',logging:false}).then(c=>{
+    const a=document.createElement('a');a.download='formporn.png';a.href=c.toDataURL('image/png',1.0);a.click();
+  }).catch(()=>alert('Try PDF instead.'));
+}
+function downloadJPEG(docId) {
+  const el = document.getElementById(docId);
+  if(!el){alert('Generate a document first.');return;}
+  html2canvas(el,{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false}).then(c=>{
+    const a=document.createElement('a');a.download='formporn.jpg';a.href=c.toDataURL('image/jpeg',0.95);a.click();
+  }).catch(()=>alert('Try PDF instead.'));
+}
 </script></body></html>

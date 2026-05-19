@@ -149,9 +149,15 @@ document.getElementById('checkout-features').innerHTML = p.features.map(f=>
 
 document.getElementById('checkout-btn').onclick = function() {
   const link = STRIPE_LINKS[plan];
-  if(!link || link.includes('YOUR_')) {
-    alert('Stripe not connected yet!\n\nGo to stripe.com, create a Payment Link, and replace YOUR_STRIPE_LINK_HERE in checkout.html with your actual link.');
+  if (!link || link.includes('YOUR_')) {
+    alert('Stripe not connected yet!\n\nGo to stripe.com, create a Payment Link, and replace the placeholder URLs in checkout.html with your actual links.');
     return;
+  }
+  if (plan === 'single') {
+    const formParam = params.get('form');
+    if (formParam) {
+      localStorage.setItem('fp-pending-form', formParam);
+    }
   }
   window.location.href = link;
 };

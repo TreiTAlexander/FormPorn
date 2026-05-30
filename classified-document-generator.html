@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classified Document Generator — Form Porn</title>
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=Oswald:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#06070f;--panel:#0d0e1c;--gold:#c9a84c;--gold2:#e8c96a;--gr:#5a6b88;--wh:#fff;--border:rgba(200,170,90,0.18);}
+body{background:var(--bg);color:var(--wh);font-family:'DM Mono',monospace;min-height:100vh;padding:24px 16px 80px;display:flex;flex-direction:column;align-items:center;}
+.topbar{width:100%;max-width:1100px;display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.topbar a{color:var(--gold);text-decoration:none;font-size:11px;letter-spacing:2px;}
+h1{font-family:'Playfair Display',serif;font-size:26px;color:var(--gold2);margin-bottom:3px;text-align:center;}
+.subtitle{font-size:10px;letter-spacing:3px;color:var(--gr);margin-bottom:28px;text-align:center;}
+.workspace{display:grid;grid-template-columns:300px 1fr;gap:28px;width:100%;max-width:1100px;align-items:start;}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:12px;}
+.pt{font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:11px;}
+.field label{display:block;font-size:8px;letter-spacing:2px;color:var(--gr);text-transform:uppercase;margin-bottom:4px;}
+.field input,.field select,.field textarea{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(200,170,90,0.15);border-radius:4px;padding:8px 10px;color:var(--wh);font-family:'DM Mono',monospace;font-size:11px;outline:none;resize:none;transition:border 0.2s;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.btn-gold{width:100%;padding:11px;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#07080f;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:6px;cursor:pointer;font-weight:700;margin-top:6px;}
+.btn-outline{width:100%;padding:9px;background:transparent;color:var(--gold);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:6px;cursor:pointer;margin-top:6px;}
+.note{margin-top:10px;padding:8px;background:rgba(255,100,100,0.05);border:1px solid rgba(255,100,100,0.15);border-radius:4px;font-size:8px;color:rgba(255,150,150,0.7);line-height:1.6;}
+.preview-col{position:sticky;top:20px;}
+.plabel{font-size:9px;letter-spacing:3px;color:var(--gr);text-transform:uppercase;margin-bottom:10px;text-align:center;}
+
+/* ═══════════════════════════════════════
+   CLASSIFIED DOCUMENT
+   Fictional "URF Office of Intelligence"
+   Letter size: 8.5" × 11" → 680 × 880px
+═══════════════════════════════════════ */
+.doc{
+  width:680px;
+  min-height:880px;
+  background:#f8f6ee;
+  font-family:'Courier Prime',monospace;
+  color:#1a1a0a;
+  box-shadow:0 30px 80px rgba(0,0,0,0.7);
+  position:relative;
+  padding:0 0 40px;
+}
+
+/* Classification banner — top */
+.doc-top-banner{
+  width:100%;
+  padding:10px 40px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.doc-classification-text{
+  font-family:'Oswald',sans-serif;
+  font-size:18px;font-weight:700;
+  letter-spacing:8px;text-transform:uppercase;
+  color:#fff;text-align:center;
+}
+
+/* Classification banner — bottom */
+.doc-bottom-banner{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:10px 40px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* Body */
+.doc-body{padding:24px 48px 32px;}
+
+/* Header block */
+.doc-agency{
+  text-align:center;
+  font-family:'Oswald',sans-serif;
+  font-size:13px;font-weight:500;
+  letter-spacing:3px;color:#2a2a1a;
+  text-transform:uppercase;
+  margin-bottom:2px;
+}
+.doc-office{
+  text-align:center;
+  font-size:11px;color:#5a5a3a;
+  letter-spacing:2px;margin-bottom:16px;
+  font-family:'Courier Prime',monospace;
+}
+
+/* Horizontal rules */
+.doc-rule{border:none;border-top:1.5px solid #2a2a1a;margin:10px 0;}
+.doc-rule-thin{border:none;border-top:0.5px solid #8a8a6a;margin:6px 0;}
+
+/* Document metadata block */
+.doc-meta{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0;margin-bottom:16px;
+  border:1px solid #2a2a1a;
+}
+.doc-meta-field{
+  padding:6px 10px;border-bottom:0.5px solid #8a8a6a;
+}
+.doc-meta-field:nth-child(odd){border-right:0.5px solid #8a8a6a;}
+.doc-meta-label{font-size:8px;letter-spacing:1.5px;color:#5a5a3a;text-transform:uppercase;margin-bottom:1px;}
+.doc-meta-value{font-size:11px;color:#1a1a0a;font-weight:700;}
+
+/* Subject line */
+.doc-subject-block{
+  margin-bottom:18px;
+}
+.doc-subject-label{font-size:9px;letter-spacing:2px;color:#5a5a3a;text-transform:uppercase;margin-bottom:3px;}
+.doc-subject-value{font-size:15px;font-weight:700;color:#1a1a0a;text-decoration:underline;}
+
+/* Body text */
+.doc-section{margin-bottom:18px;}
+.doc-section-num{font-size:11px;font-weight:700;text-decoration:underline;margin-bottom:6px;color:#1a1a0a;}
+.doc-text{font-size:12px;line-height:1.8;color:#2a2a1a;}
+
+/* Redaction blocks */
+.redacted{
+  display:inline-block;
+  background:#1a1a0a;
+  color:#1a1a0a;
+  min-width:80px;height:14px;
+  border-radius:1px;
+  vertical-align:middle;
+  margin:0 2px;
+}
+
+/* Signature block */
+.doc-sig-block{
+  margin-top:24px;
+  display:grid;grid-template-columns:1fr 1fr;gap:32px;
+}
+.doc-sig-line{border-top:1px solid #2a2a1a;padding-top:4px;margin-top:32px;}
+.doc-sig-name{font-size:11px;font-weight:700;color:#1a1a0a;}
+.doc-sig-title{font-size:10px;color:#5a5a3a;}
+
+/* Page stamp */
+.doc-stamp{
+  position:absolute;
+  right:48px;top:50%;transform:translateY(-50%) rotate(12deg);
+  border:4px solid;border-radius:4px;
+  padding:8px 14px;
+  font-family:'Oswald',sans-serif;
+  font-size:22px;font-weight:700;letter-spacing:4px;
+  opacity:0.12;pointer-events:none;
+  white-space:nowrap;
+}
+
+/* Page number + handling instruction */
+.doc-footer{
+  position:absolute;bottom:42px;left:48px;right:48px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.doc-footer-text{font-size:9px;color:#5a5a3a;letter-spacing:1px;}
+.doc-fp-mark{font-family:'DM Mono',monospace;font-size:7px;color:rgba(0,0,0,0.2);letter-spacing:2px;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/index.html">← Form Porn</a>
+  <span style="font-size:12px;letter-spacing:3px;color:var(--gold2);">Classified Document Generator</span>
+  <a href="/pricing.html">$3 to Export</a>
+</div>
+
+<h1>Classified Document Generator</h1>
+<p class="subtitle">CONFIDENTIAL · SECRET · TOP SECRET · TS/SCI · Form Porn Universe</p>
+
+<div class="workspace">
+<div>
+  <div class="panel">
+    <div class="pt">Classification Level</div>
+    <div class="field">
+      <label>Classification</label>
+      <select id="f_class" onchange="render()">
+        <option value="confidential">CONFIDENTIAL</option>
+        <option value="secret">SECRET</option>
+        <option value="topsecret">TOP SECRET</option>
+        <option value="tssci">TOP SECRET // SCI</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Handling Instructions</label>
+      <select id="f_handling" onchange="render()">
+        <option value="NOFORN">NOFORN</option>
+        <option value="REL TO URF, FVEY">REL TO URF, FVEY</option>
+        <option value="ORCON">ORCON</option>
+        <option value="PROPIN">PROPIN</option>
+        <option value="LIMDIS">LIMDIS</option>
+        <option value="">None</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="pt">Document Header</div>
+    <div class="field"><label>Issuing Agency</label><input id="f_agency" value="OFFICE OF STRATEGIC INTELLIGENCE" oninput="render()"></div>
+    <div class="field"><label>Sub-Office</label><input id="f_office" value="Directorate of Analysis · United Regions of Forma" oninput="render()"></div>
+    <div class="field"><label>Document Title / Subject</label><input id="f_subject" value="INTELLIGENCE ASSESSMENT: FORMA BASIN OPERATIONS" oninput="render()"></div>
+    <div class="r2">
+      <div class="field"><label>Doc Number</label><input id="f_docnum" value="URF-INT-2026-04418" oninput="render()"></div>
+      <div class="field"><label>Date</label><input id="f_date" value="15 APRIL 2026" oninput="render()"></div>
+    </div>
+    <div class="r2">
+      <div class="field"><label>Originator</label><input id="f_orig" value="Papeston, F.L." oninput="render()"></div>
+      <div class="field"><label>Recipients</label><input id="f_recip" value="SENIOR STAFF ONLY" oninput="render()"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="pt">Document Body</div>
+    <div class="field"><label>Section 1 — Executive Summary</label>
+      <textarea id="f_s1" rows="4" oninput="render()">This assessment evaluates operational conditions in the Forma Basin region. Analysis is based on SIGINT, HUMINT, and open-source intelligence collected over a 90-day assessment window. Key findings indicate elevated activity across designated monitoring sectors.</textarea></div>
+    <div class="field"><label>Section 2 — Key Findings</label>
+      <textarea id="f_s2" rows="4" oninput="render()">1. Operational tempo in Sector [REDACTED] increased by an estimated [REDACTED]% over the prior quarter.
+2. Assets positioned at coordinates [REDACTED] have maintained persistent observation capability.
+3. No confirmed hostile action detected. Threat level remains at ELEVATED.</textarea></div>
+    <div class="field"><label>Section 3 — Recommendations</label>
+      <textarea id="f_s3" rows="3" oninput="render()">Continue monitoring via existing collection assets. Reassess classification level upon confirmation of intelligence from [REDACTED] sources. Next review scheduled: [REDACTED].</textarea></div>
+  </div>
+
+  <div class="panel">
+    <div class="pt">Signatures</div>
+    <div class="r2">
+      <div class="field"><label>Prepared By</label><input id="f_sig1" value="F.L. Papeston" oninput="render()"></div>
+      <div class="field"><label>Title</label><input id="f_sig1t" value="Senior Intelligence Analyst" oninput="render()"></div>
+    </div>
+    <div class="r2">
+      <div class="field"><label>Approved By</label><input id="f_sig2" value="Director M. Holloway" oninput="render()"></div>
+      <div class="field"><label>Title</label><input id="f_sig2t" value="Director of Analysis" oninput="render()"></div>
+    </div>
+  </div>
+
+  <button class="btn-gold" onclick="exportDoc()">⬇ Export Document — $3</button>
+  <button class="btn-outline" onclick="window.print()">🖨 Print</button>
+  <div class="note">⚠ Fiction only. "United Regions of Forma" and "URF Office of Strategic Intelligence" are entirely fictional. Form Porn entertainment use only.</div>
+</div>
+
+<div class="preview-col">
+  <p class="plabel">Live Preview</p>
+  <div class="doc" id="doc">
+
+    <!-- Top classification banner -->
+    <div class="doc-top-banner" id="top-banner">
+      <div class="doc-classification-text" id="top-class-text">CONFIDENTIAL</div>
+    </div>
+
+    <!-- Body -->
+    <div class="doc-body">
+      <div class="doc-agency" id="d-agency">OFFICE OF STRATEGIC INTELLIGENCE</div>
+      <div class="doc-office" id="d-office">Directorate of Analysis · United Regions of Forma</div>
+      <hr class="doc-rule">
+      <hr class="doc-rule-thin">
+
+      <div class="doc-meta">
+        <div class="doc-meta-field"><div class="doc-meta-label">Document Number</div><div class="doc-meta-value" id="d-docnum">URF-INT-2026-04418</div></div>
+        <div class="doc-meta-field"><div class="doc-meta-label">Date</div><div class="doc-meta-value" id="d-date">15 APRIL 2026</div></div>
+        <div class="doc-meta-field"><div class="doc-meta-label">Originator</div><div class="doc-meta-value" id="d-orig">Papeston, F.L.</div></div>
+        <div class="doc-meta-field"><div class="doc-meta-label">Recipients</div><div class="doc-meta-value" id="d-recip">SENIOR STAFF ONLY</div></div>
+        <div class="doc-meta-field" style="grid-column:1/-1;"><div class="doc-meta-label">Handling</div><div class="doc-meta-value" id="d-handling">NOFORN</div></div>
+      </div>
+
+      <div class="doc-subject-block">
+        <div class="doc-subject-label">Subject</div>
+        <div class="doc-subject-value" id="d-subject">INTELLIGENCE ASSESSMENT: FORMA BASIN OPERATIONS</div>
+      </div>
+
+      <hr class="doc-rule">
+
+      <div class="doc-section">
+        <div class="doc-section-num">1. EXECUTIVE SUMMARY</div>
+        <p class="doc-text" id="d-s1">Section 1 text.</p>
+      </div>
+
+      <div class="doc-section">
+        <div class="doc-section-num">2. KEY FINDINGS</div>
+        <p class="doc-text" id="d-s2">Section 2 text.</p>
+      </div>
+
+      <div class="doc-section">
+        <div class="doc-section-num">3. RECOMMENDATIONS</div>
+        <p class="doc-text" id="d-s3">Section 3 text.</p>
+      </div>
+
+      <hr class="doc-rule">
+
+      <div class="doc-sig-block">
+        <div>
+          <div class="doc-sig-line"></div>
+          <div class="doc-sig-name" id="d-sig1">F.L. Papeston</div>
+          <div class="doc-sig-title" id="d-sig1t">Senior Intelligence Analyst</div>
+        </div>
+        <div>
+          <div class="doc-sig-line"></div>
+          <div class="doc-sig-name" id="d-sig2">Director M. Holloway</div>
+          <div class="doc-sig-title" id="d-sig2t">Director of Analysis</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Diagonal stamp -->
+    <div class="doc-stamp" id="doc-stamp">CONFIDENTIAL</div>
+
+    <!-- Footer -->
+    <div class="doc-footer">
+      <span class="doc-footer-text" id="d-footer">URF-OSI · CONFIDENTIAL · PAGE 1 OF 1</span>
+      <span class="doc-fp-mark">FORM PORN © FP · ENTERTAINMENT USE ONLY</span>
+    </div>
+
+    <!-- Bottom classification banner -->
+    <div class="doc-bottom-banner" id="bottom-banner">
+      <div class="doc-classification-text" id="bottom-class-text">CONFIDENTIAL</div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+const LEVELS = {
+  confidential:{label:'CONFIDENTIAL',handling:'//NOFORN',bannerBg:'#0050c0',stampColor:'#0050c0'},
+  secret:{label:'SECRET',handling:'//NOFORN',bannerBg:'#cc1111',stampColor:'#cc1111'},
+  topsecret:{label:'TOP SECRET',handling:'',bannerBg:'#e07000',stampColor:'#e07000'},
+  tssci:{label:'TOP SECRET // SCI',handling:'',bannerBg:'#d0a000',stampColor:'#d0a000'},
+};
+
+function render(){
+  const g = id=>(document.getElementById(id)||{}).value||'';
+  const level = g('f_class');
+  const L = LEVELS[level] || LEVELS.confidential;
+  const handling = g('f_handling');
+  const fullLabel = handling ? `${L.label} // ${handling}` : L.label;
+
+  // Banners
+  [document.getElementById('top-banner'),document.getElementById('bottom-banner')].forEach(el=>{
+    if(el) el.style.background = L.bannerBg;
+  });
+  document.getElementById('top-class-text').textContent = fullLabel;
+  document.getElementById('bottom-class-text').textContent = fullLabel;
+
+  // Stamp
+  const stamp = document.getElementById('doc-stamp');
+  stamp.textContent = L.label;
+  stamp.style.color = L.stampColor;
+  stamp.style.borderColor = L.stampColor;
+
+  // Footer
+  document.getElementById('d-footer').textContent = `URF-OSI · ${L.label} · PAGE 1 OF 1`;
+
+  // Fields
+  document.getElementById('d-agency').textContent = g('f_agency');
+  document.getElementById('d-office').textContent = g('f_office');
+  document.getElementById('d-docnum').textContent = g('f_docnum');
+  document.getElementById('d-date').textContent = g('f_date');
+  document.getElementById('d-orig').textContent = g('f_orig');
+  document.getElementById('d-recip').textContent = g('f_recip');
+  document.getElementById('d-handling').textContent = handling || 'STANDARD';
+  document.getElementById('d-subject').textContent = g('f_subject');
+
+  // Body text with redaction rendering
+  ['s1','s2','s3'].forEach(s=>{
+    const text = g(`f_${s}`);
+    const html = text.replace(/\[REDACTED\]/g, '<span class="redacted">REDACTED</span>');
+    document.getElementById(`d-${s}`).innerHTML = html;
+  });
+
+  document.getElementById('d-sig1').textContent = g('f_sig1');
+  document.getElementById('d-sig1t').textContent = g('f_sig1t');
+  document.getElementById('d-sig2').textContent = g('f_sig2');
+  document.getElementById('d-sig2t').textContent = g('f_sig2t');
+}
+
+async function exportDoc(){
+  const el = document.getElementById('doc');
+  const canvas = await html2canvas(el,{scale:3,useCORS:true,backgroundColor:'#f8f6ee',logging:false});
+  const link = document.createElement('a');
+  const level = (document.getElementById('f_class')||{}).value||'classified';
+  link.download = `forma-${level}-document.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+render();
+</script>
+</body>
+</html>

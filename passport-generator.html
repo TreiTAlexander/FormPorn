@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forma Travel Document — Form Porn</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Playfair+Display:wght@700;900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#06070f;--panel:#0d0e1c;--gold:#c9a84c;--gold2:#e8c96a;--gr:#5a6b88;--wh:#fff;--border:rgba(200,170,90,0.18);}
+body{background:var(--bg);color:var(--wh);font-family:'DM Mono',monospace;min-height:100vh;padding:24px 16px 80px;display:flex;flex-direction:column;align-items:center;}
+.topbar{width:100%;max-width:1100px;display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.topbar a{color:var(--gold);text-decoration:none;font-size:11px;letter-spacing:2px;}
+h1{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold2);margin-bottom:3px;text-align:center;}
+.subtitle{font-size:10px;letter-spacing:3px;color:var(--gr);margin-bottom:28px;text-align:center;}
+.workspace{display:grid;grid-template-columns:300px 1fr;gap:28px;width:100%;max-width:1100px;align-items:start;}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:12px;}
+.pt{font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:11px;}
+.field label{display:block;font-size:8px;letter-spacing:2px;color:var(--gr);text-transform:uppercase;margin-bottom:4px;}
+.field input,.field select{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(200,170,90,0.15);border-radius:4px;padding:8px 10px;color:var(--wh);font-family:'DM Mono',monospace;font-size:11px;outline:none;transition:border 0.2s;}
+.field input:focus,.field select:focus{border-color:var(--gold);}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.photo-drop{border:1.5px dashed rgba(200,170,90,0.25);border-radius:6px;padding:12px;text-align:center;cursor:pointer;position:relative;min-height:70px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;}
+.photo-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.photo-drop p{font-size:9px;color:var(--gr);letter-spacing:1px;}
+.photo-prev{width:52px;height:65px;object-fit:cover;border-radius:2px;display:none;}
+.btn-gold{width:100%;padding:11px;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#07080f;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:6px;cursor:pointer;font-weight:700;margin-top:6px;}
+.btn-outline{width:100%;padding:9px;background:transparent;color:var(--gold);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:6px;cursor:pointer;margin-top:6px;}
+.note{margin-top:10px;padding:8px;background:rgba(255,100,100,0.05);border:1px solid rgba(255,100,100,0.15);border-radius:4px;font-size:8px;color:rgba(255,150,150,0.7);line-height:1.6;}
+.preview-col{position:sticky;top:20px;}
+.plabel{font-size:9px;letter-spacing:3px;color:var(--gr);text-transform:uppercase;margin-bottom:10px;text-align:center;}
+
+/* ══════════════════════════════════════════
+   PASSPORT — Biographic Data Page
+   Modeled on real ICAO passport layout:
+   - Cover: dark navy/blue
+   - Data page: polycarbonate texture
+   - Photo: top left, passport-sized
+   - Fields: bilingual (English/French)
+   - MRZ: 2 lines × 44 characters OCR-B
+   - Scenic background watermark
+══════════════════════════════════════════ */
+
+.passport-wrap{width:500px;margin:0 auto;}
+
+/* ── COVER ── */
+.passport-cover{
+  width:500px;height:340px;
+  border-radius:6px 6px 0 0;
+  position:relative;overflow:hidden;
+  box-shadow:0 -4px 20px rgba(0,0,0,0.5);
+}
+.cover-bg{
+  position:absolute;inset:0;
+  background:linear-gradient(160deg,#0d1f4a 0%,#0a1838 50%,#091530 100%);
+}
+/* Cover guilloche pattern */
+.cover-pattern{
+  position:absolute;inset:0;
+  background-image:
+    repeating-radial-gradient(ellipse at 30% 50%,transparent 0px,transparent 18px,rgba(200,180,100,0.04) 18px,rgba(200,180,100,0.04) 19px),
+    repeating-radial-gradient(ellipse at 70% 50%,transparent 0px,transparent 14px,rgba(200,180,100,0.03) 14px,rgba(200,180,100,0.03) 15px);
+}
+/* Cover emblem */
+.cover-emblem{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.emblem-circle{
+  width:90px;height:90px;border-radius:50%;
+  border:2px solid rgba(200,180,100,0.45);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  background:radial-gradient(ellipse at center,rgba(200,180,100,0.06) 0%,transparent 70%);
+}
+.emblem-circle::before{content:'';position:absolute;inset:6px;border-radius:50%;border:0.75px solid rgba(200,180,100,0.2);}
+.emblem-text{font-family:'Oswald',sans-serif;font-size:12px;letter-spacing:2px;color:rgba(200,180,100,0.8);text-align:center;line-height:1.4;}
+.emblem-stars{display:flex;gap:6px;margin-top:2px;}
+.emblem-stars span{color:rgba(200,180,100,0.65);font-size:9px;}
+.cover-country{font-family:'Oswald',sans-serif;font-size:14px;font-weight:600;letter-spacing:5px;color:rgba(200,180,100,0.85);text-align:center;margin-top:6px;}
+.cover-doctype{font-family:'Libre Baskerville',serif;font-size:26px;color:rgba(220,200,150,0.9);text-align:center;letter-spacing:3px;margin-top:4px;}
+.cover-doctype-sub{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:3px;color:rgba(200,180,100,0.45);text-align:center;margin-top:2px;}
+.cover-fp{position:absolute;bottom:8px;right:14px;font-family:'DM Mono',monospace;font-size:6.5px;color:rgba(200,180,100,0.18);letter-spacing:2px;}
+
+/* ── DATA PAGE ── */
+.passport-data{
+  width:500px;
+  background:linear-gradient(160deg,#f5f2ea 0%,#eeead8 30%,#e8e4d0 60%,#f0ecd8 100%);
+  position:relative;overflow:hidden;
+  padding:18px 18px 10px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.6);
+  border-radius:0 0 4px 4px;
+}
+
+/* Watermark scenic background */
+.data-watermark{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 80% 30%,rgba(0,60,160,0.04) 0%,transparent 50%),
+    radial-gradient(ellipse at 20% 70%,rgba(0,80,40,0.03) 0%,transparent 40%);
+  opacity:0.8;
+}
+
+/* Fine guilloche across whole page */
+.data-guilloche{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    repeating-linear-gradient(0deg,transparent 0px,transparent 3px,rgba(0,40,120,0.025) 3px,rgba(0,40,120,0.025) 4px),
+    repeating-linear-gradient(90deg,transparent 0px,transparent 3px,rgba(0,40,120,0.018) 3px,rgba(0,40,120,0.018) 4px),
+    repeating-linear-gradient(60deg,transparent 0px,transparent 8px,rgba(0,40,120,0.015) 8px,rgba(0,40,120,0.015) 9px);
+}
+
+/* Borders — thin double rule like real passports */
+.data-border{position:absolute;top:8px;left:8px;right:8px;bottom:48px;border:1px solid rgba(0,40,120,0.2);pointer-events:none;}
+.data-border-inner{position:absolute;top:11px;left:11px;right:11px;bottom:51px;border:0.3px solid rgba(0,40,120,0.1);pointer-events:none;}
+
+/* Page header */
+.data-header{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:12px;padding-bottom:8px;
+  border-bottom:1px solid rgba(0,40,120,0.15);
+}
+.data-header-left{
+  font-family:'DM Mono',monospace;
+  font-size:7.5px;letter-spacing:1.5px;
+  color:rgba(0,40,120,0.55);
+  line-height:1.6;text-transform:uppercase;
+}
+.data-header-right{
+  font-family:'DM Mono',monospace;
+  font-size:7.5px;
+  color:rgba(0,40,120,0.4);
+  text-align:right;letter-spacing:1px;
+  line-height:1.6;
+}
+.data-type-box{
+  display:inline-block;border:1px solid rgba(0,40,120,0.3);
+  padding:2px 8px;font-size:11px;font-weight:700;
+  color:rgba(0,40,120,0.7);font-family:'Oswald',sans-serif;
+  letter-spacing:2px;margin-top:4px;
+}
+
+/* Main body */
+.data-body{display:flex;gap:14px;}
+
+/* Photo */
+.data-photo{
+  width:106px;height:130px;
+  border:1.5px solid rgba(0,40,120,0.25);
+  flex-shrink:0;
+  background:rgba(0,40,120,0.04);
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+}
+.data-photo img{width:100%;height:100%;object-fit:cover;}
+.data-photo-ph{font-family:'DM Mono',monospace;font-size:8px;color:rgba(0,40,120,0.25);text-align:center;letter-spacing:1px;line-height:1.8;}
+.data-photo-label{position:absolute;bottom:0;left:0;right:0;background:rgba(0,40,120,0.08);font-family:'DM Mono',monospace;font-size:6px;color:rgba(0,40,120,0.4);text-align:center;padding:2px;letter-spacing:1px;}
+
+/* Fields */
+.data-fields{flex:1;}
+.data-row{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:0;}
+.data-field{padding:5px 6px 4px;border-bottom:0.5px solid rgba(0,40,120,0.1);}
+.data-field.full{grid-column:1/-1;}
+.data-label{font-family:'DM Mono',monospace;font-size:6.5px;letter-spacing:1.5px;color:rgba(0,40,120,0.45);text-transform:uppercase;margin-bottom:1.5px;line-height:1.2;}
+.data-label em{font-style:italic;opacity:0.7;}
+.data-value{font-family:'Libre Baskerville',serif;font-size:12px;font-weight:700;color:#0a1428;line-height:1.2;letter-spacing:0.3px;}
+.data-value.sm{font-size:10.5px;}
+.data-value.mono{font-family:'DM Mono',monospace;font-size:10px;font-weight:500;}
+
+/* Signature row */
+.data-sig-row{
+  display:flex;justify-content:space-between;align-items:flex-end;
+  margin-top:10px;padding-top:6px;
+  border-top:0.5px solid rgba(0,40,120,0.1);
+}
+.data-sig-block{}
+.data-sig-name{
+  font-family:'Libre Baskerville',serif;
+  font-style:italic;font-size:15px;
+  color:#0a1428;
+  border-bottom:0.75px solid rgba(0,40,120,0.25);
+  padding-bottom:2px;display:inline-block;min-width:140px;
+}
+.data-sig-label{font-family:'DM Mono',monospace;font-size:6px;letter-spacing:1.5px;color:rgba(0,40,120,0.35);text-transform:uppercase;margin-top:2px;}
+
+.data-passnum{text-align:right;}
+.data-passnum-label{font-family:'DM Mono',monospace;font-size:6.5px;letter-spacing:1.5px;color:rgba(0,40,120,0.35);text-transform:uppercase;margin-bottom:2px;}
+.data-passnum-value{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:#0a1428;letter-spacing:2px;}
+
+/* MRZ — Machine Readable Zone */
+.data-mrz{
+  margin-top:10px;
+  padding:7px 10px 6px;
+  background:rgba(0,0,0,0.04);
+  border-top:2px solid rgba(0,40,120,0.15);
+  position:relative;
+}
+.data-mrz-label{font-family:'DM Mono',monospace;font-size:6px;letter-spacing:2px;color:rgba(0,40,120,0.3);text-transform:uppercase;margin-bottom:4px;}
+.data-mrz-line{
+  font-family:'DM Mono',monospace;
+  font-size:10px;color:#0a1428;
+  letter-spacing:2.5px;line-height:1.6;
+  word-break:break-all;
+  opacity:0.6;
+}
+
+/* FP mark */
+.data-fp{position:absolute;bottom:3px;right:10px;font-family:'DM Mono',monospace;font-size:6px;color:rgba(0,40,120,0.15);letter-spacing:1.5px;}
+
+/* Cover style options */
+.cover-select{margin-bottom:8px;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="/index.html">← Form Porn</a>
+  <span style="font-size:11px;letter-spacing:3px;color:var(--gold2);">Forma Travel Document</span>
+  <a href="/pricing.html">$3 Export</a>
+</div>
+<h1>Forma Travel Document</h1>
+<p class="subtitle">United Regions of Forma · International Travel Credential</p>
+
+<div class="workspace">
+<div>
+  <div class="panel">
+    <div class="pt">Cover Color</div>
+    <div class="field">
+      <select id="f_covercolor" onchange="applyCover()">
+        <option value="navy">Navy Blue</option>
+        <option value="burgundy">Burgundy</option>
+        <option value="forest">Forest Green</option>
+        <option value="black">Onyx Black</option>
+        <option value="gold">Deep Gold</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="pt">Personal Details</div>
+    <div class="r2">
+      <div class="field"><label>Surname</label><input id="f_surname" value="PAPESTON" oninput="render()"></div>
+      <div class="field"><label>Given Names</label><input id="f_given" value="FORMA LUXE" oninput="render()"></div>
+    </div>
+    <div class="r3">
+      <div class="field"><label>Nationality</label><input id="f_nation" value="FORMAN" oninput="render()"></div>
+      <div class="field"><label>Sex</label><select id="f_sex" onchange="render()"><option>F</option><option>M</option><option>X</option></select></div>
+      <div class="field"><label>Place of Birth</label><input id="f_pob" value="Formavia" oninput="render()"></div>
+    </div>
+    <div class="r3">
+      <div class="field"><label>Date of Birth</label><input id="f_dob" value="15 MAR 1990" oninput="render()"></div>
+      <div class="field"><label>Issue Date</label><input id="f_issue" value="10 JAN 2022" oninput="render()"></div>
+      <div class="field"><label>Expiry Date</label><input id="f_expiry" value="09 JAN 2032" oninput="render()"></div>
+    </div>
+    <div class="r2">
+      <div class="field"><label>Passport No.</label><input id="f_passnum" value="FP8840197" oninput="render()"></div>
+      <div class="field"><label>Authority</label><input id="f_auth" value="URF-DEPT-STATE" oninput="render()"></div>
+    </div>
+    <div class="field"><label>Signature</label><input id="f_sig" value="Forma Papeston" oninput="render()"></div>
+  </div>
+
+  <div class="panel">
+    <div class="pt">Photo Upload</div>
+    <div class="photo-drop" onclick="document.getElementById('pPhoto').click()">
+      <input type="file" id="pPhoto" accept="image/*" onchange="loadPhoto(event)">
+      <img id="photoThumb" class="photo-prev">
+      <p id="photoLabel">📷 Click to upload<br><span style="font-size:8px;opacity:0.5;">Passport-style photo</span></p>
+    </div>
+  </div>
+
+  <button class="btn-gold" onclick="exportPass()">⬇ Export — $3</button>
+  <button class="btn-outline" onclick="window.print()">🖨 Print</button>
+  <div class="note">⚠ "United Regions of Forma" is fictional. Not a real travel document. Form Porn entertainment use only.</div>
+</div>
+
+<div class="preview-col">
+  <p class="plabel">Full Passport</p>
+  <div class="passport-wrap" id="passport-wrap">
+
+    <!-- COVER -->
+    <div class="passport-cover" id="passport-cover">
+      <div class="cover-bg" id="cover-bg"></div>
+      <div class="cover-pattern"></div>
+      <div class="cover-emblem">
+        <div class="emblem-circle">
+          <div class="emblem-text">URF<br>✦<br>DCI</div>
+        </div>
+        <div class="emblem-stars"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+        <div class="cover-country">UNITED REGIONS OF FORMA</div>
+        <div class="cover-doctype">PASSPORT</div>
+        <div class="cover-doctype-sub">TRAVEL DOCUMENT · TYPE P</div>
+      </div>
+      <div class="cover-fp">FORM PORN © FP</div>
+    </div>
+
+    <!-- DATA PAGE -->
+    <div class="passport-data" id="passport-data">
+      <div class="data-watermark"></div>
+      <div class="data-guilloche"></div>
+      <div class="data-border"></div>
+      <div class="data-border-inner"></div>
+
+      <!-- Header -->
+      <div class="data-header">
+        <div class="data-header-left">
+          UNITED REGIONS OF FORMA<br>
+          DEPT. OF CIVIL IDENTITY<br>
+          OFFICE OF TRAVEL DOCUMENTATION
+        </div>
+        <div class="data-header-right">
+          TYPE / TYPE<br>
+          <div class="data-type-box">P</div><br>
+          <span style="font-size:6.5px;opacity:0.6;">URF TRAVEL CREDENTIAL</span>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="data-body">
+        <!-- Photo -->
+        <div class="data-photo" id="data-photo">
+          <div class="data-photo-ph" id="photo-ph">PHOTO<br>HERE</div>
+          <img id="passport-photo-img" style="display:none;">
+          <div class="data-photo-label">URF · DCI</div>
+        </div>
+
+        <!-- Fields -->
+        <div class="data-fields">
+          <div class="data-row">
+            <div class="data-field">
+              <div class="data-label">Surname / <em>Nom</em></div>
+              <div class="data-value" id="d_surname">PAPESTON</div>
+            </div>
+            <div class="data-field">
+              <div class="data-label">Given Names / <em>Prénoms</em></div>
+              <div class="data-value sm" id="d_given">FORMA LUXE</div>
+            </div>
+          </div>
+          <div class="data-row">
+            <div class="data-field">
+              <div class="data-label">Nationality / <em>Nationalité</em></div>
+              <div class="data-value mono" id="d_nation">FORMAN</div>
+            </div>
+            <div class="data-field">
+              <div class="data-label">Sex / <em>Sexe</em></div>
+              <div class="data-value mono" id="d_sex">F</div>
+            </div>
+          </div>
+          <div class="data-row">
+            <div class="data-field">
+              <div class="data-label">Date of Birth / <em>Date de naissance</em></div>
+              <div class="data-value mono sm" id="d_dob">15 MAR 1990</div>
+            </div>
+            <div class="data-field">
+              <div class="data-label">Place of Birth / <em>Lieu de naissance</em></div>
+              <div class="data-value sm" id="d_pob">Formavia</div>
+            </div>
+          </div>
+          <div class="data-row">
+            <div class="data-field">
+              <div class="data-label">Issue Date / <em>Date de délivrance</em></div>
+              <div class="data-value mono sm" id="d_issue">10 JAN 2022</div>
+            </div>
+            <div class="data-field">
+              <div class="data-label">Expiry Date / <em>Date d'expiration</em></div>
+              <div class="data-value mono sm" id="d_expiry" style="color:#8a2020;">09 JAN 2032</div>
+            </div>
+          </div>
+          <div class="data-row">
+            <div class="data-field full">
+              <div class="data-label">Authority / <em>Autorité</em></div>
+              <div class="data-value sm" id="d_auth">URF-DEPT-STATE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sig + Passport number -->
+      <div class="data-sig-row">
+        <div class="data-sig-block">
+          <div class="data-sig-name" id="d_sig">Forma Papeston</div>
+          <div class="data-sig-label">Holder's Signature / Signature du titulaire</div>
+        </div>
+        <div class="data-passnum">
+          <div class="data-passnum-label">Passport No. / No. de Passeport</div>
+          <div class="data-passnum-value" id="d_passnum">FP8840197</div>
+        </div>
+      </div>
+
+      <!-- MRZ -->
+      <div class="data-mrz">
+        <div class="data-mrz-label">Machine Readable Zone</div>
+        <div class="data-mrz-line" id="d_mrz1">P&lt;URFPAPESTON&lt;&lt;FORMA&lt;LUXE&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
+        <div class="data-mrz-line" id="d_mrz2">FP88401970URF9003152F3201091&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;8</div>
+      </div>
+
+      <div class="data-fp">FORM PORN © FP · ENTERTAINMENT USE ONLY · NOT A REAL TRAVEL DOCUMENT</div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+const COVERS = {
+  navy:'linear-gradient(160deg,#0d1f4a 0%,#0a1838 50%,#091530 100%)',
+  burgundy:'linear-gradient(160deg,#3a0d1a 0%,#2a0814 50%,#1e0610 100%)',
+  forest:'linear-gradient(160deg,#0d3018 0%,#0a2410 50%,#091c0c 100%)',
+  black:'linear-gradient(160deg,#141414 0%,#0a0a0a 50%,#060606 100%)',
+  gold:'linear-gradient(160deg,#2a1e08 0%,#1e1604 50%,#141002 100%)',
+};
+
+function applyCover(){
+  const v=document.getElementById('f_covercolor').value;
+  document.getElementById('cover-bg').style.background=COVERS[v]||COVERS.navy;
+}
+
+function render(){
+  const g=id=>(document.getElementById(id)||{}).value||'';
+  const surname=(g('f_surname')||'PAPESTON').toUpperCase();
+  const given=(g('f_given')||'FORMA LUXE').toUpperCase();
+  const nation=(g('f_nation')||'FORMAN').toUpperCase();
+  const sex=g('f_sex')||'F';
+  const pob=g('f_pob')||'Formavia';
+  const dob=(g('f_dob')||'15 MAR 1990').toUpperCase();
+  const issue=(g('f_issue')||'10 JAN 2022').toUpperCase();
+  const expiry=(g('f_expiry')||'09 JAN 2032').toUpperCase();
+  const auth=(g('f_auth')||'URF-DEPT-STATE').toUpperCase();
+  const passnum=(g('f_passnum')||'FP8840197').toUpperCase();
+  const sig=g('f_sig')||'Forma Papeston';
+
+  document.getElementById('d_surname').textContent=surname;
+  document.getElementById('d_given').textContent=given;
+  document.getElementById('d_nation').textContent=nation;
+  document.getElementById('d_sex').textContent=sex;
+  document.getElementById('d_pob').textContent=pob;
+  document.getElementById('d_dob').textContent=dob;
+  document.getElementById('d_issue').textContent=issue;
+  document.getElementById('d_expiry').textContent=expiry;
+  document.getElementById('d_auth').textContent=auth;
+  document.getElementById('d_passnum').textContent=passnum;
+  document.getElementById('d_sig').textContent=sig;
+
+  // MRZ generation (fictional but correctly formatted)
+  const nClean=nation.slice(0,3).padEnd(3,'<');
+  const sClean=surname.replace(/[^A-Z]/g,'').padEnd(14,'<').slice(0,14);
+  const gClean=given.replace(/[^A-Z ]/g,'').replace(/ /g,'<').padEnd(15,'<').slice(0,15);
+  const pClean=passnum.replace(/[^A-Z0-9]/g,'').padEnd(9,'<').slice(0,9);
+  const line1=('P<'+nClean+sClean+'<<'+gClean).slice(0,44).padEnd(44,'<');
+  const line2=(pClean+'0'+nClean+'0000000'+sex+'0000000<<<<<<<<<<<<<<0').slice(0,44);
+  document.getElementById('d_mrz1').textContent=line1;
+  document.getElementById('d_mrz2').textContent=line2;
+}
+
+function loadPhoto(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const img=document.getElementById('passport-photo-img');
+    img.src=ev.target.result;img.style.display='block';
+    document.getElementById('photo-ph').style.display='none';
+    document.getElementById('photoThumb').src=ev.target.result;
+    document.getElementById('photoThumb').style.display='block';
+    document.getElementById('photoLabel').style.display='none';
+  };
+  r.readAsDataURL(f);
+}
+
+async function exportPass(){
+  const el=document.getElementById('passport-wrap');
+  const canvas=await html2canvas(el,{scale:3,useCORS:true,backgroundColor:null,logging:false,allowTaint:true});
+  const link=document.createElement('a');
+  link.download='forma-travel-document.png';
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+}
+
+applyCover();
+render();
+</script>
+</body>
+</html>

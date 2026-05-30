@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>National Registry Card — Form Porn</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Playfair+Display:wght@700;900&family=IM+Fell+English:ital@0;1&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#06070f;--panel:#0d0e1c;--gold:#c9a84c;--gold2:#e8c96a;--gr:#5a6b88;--wh:#fff;--border:rgba(200,170,90,0.18);}
+body{background:var(--bg);color:var(--wh);font-family:'DM Mono',monospace;min-height:100vh;padding:24px 16px 80px;display:flex;flex-direction:column;align-items:center;}
+.topbar{width:100%;max-width:1000px;display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.topbar a{color:var(--gold);text-decoration:none;font-size:11px;letter-spacing:2px;}
+h1{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold2);margin-bottom:3px;text-align:center;}
+.subtitle{font-size:10px;letter-spacing:3px;color:var(--gr);margin-bottom:28px;text-align:center;}
+.workspace{display:grid;grid-template-columns:280px 1fr;gap:28px;width:100%;max-width:1000px;align-items:start;}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:12px;}
+.pt{font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:11px;}
+.field label{display:block;font-size:8px;letter-spacing:2px;color:var(--gr);text-transform:uppercase;margin-bottom:4px;}
+.field input,.field select{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(200,170,90,0.15);border-radius:4px;padding:8px 10px;color:var(--wh);font-family:'DM Mono',monospace;font-size:11px;outline:none;transition:border 0.2s;}
+.field input:focus,.field select:focus{border-color:var(--gold);}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.btn-gold{width:100%;padding:11px;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#07080f;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:6px;cursor:pointer;font-weight:700;margin-top:6px;}
+.btn-outline{width:100%;padding:9px;background:transparent;color:var(--gold);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:6px;cursor:pointer;margin-top:6px;}
+.note{margin-top:10px;padding:8px;background:rgba(255,100,100,0.05);border:1px solid rgba(255,100,100,0.15);border-radius:4px;font-size:8px;color:rgba(255,150,150,0.7);line-height:1.6;}
+.preview-col{position:sticky;top:20px;}
+.plabel{font-size:9px;letter-spacing:3px;color:var(--gr);text-transform:uppercase;margin-bottom:12px;text-align:center;}
+
+/* ════════════════════════════════════════
+   THE CARD — Modeled on real SSN card
+   Real size: 3.375" × 2.125" (CR80)
+   We render at 640 × 270px
+   Real card: off-white stock, blue ink,
+   "Social Security" in OCR-style serif,
+   raised number feel, thin blue border
+════════════════════════════════════════ */
+.card-scene{perspective:1200px;width:640px;margin:0 auto;}
+
+.card{
+  width:640px;height:270px;
+  position:relative;
+  border-radius:6px;
+  font-family:'Libre Baskerville',serif;
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.8),
+    0 0 0 1px rgba(255,255,255,0.08),
+    0 2px 4px rgba(0,0,0,0.5);
+  transform:rotateX(3deg) rotateY(-1deg);
+  transition:transform 0.5s ease;
+  overflow:hidden;
+}
+.card:hover{transform:rotateX(0) rotateY(0) scale(1.01);}
+
+/* Card base — off-white paper stock */
+.card-paper{
+  position:absolute;inset:0;
+  background:linear-gradient(155deg,#f8f6f0 0%,#f2efe8 40%,#ede8df 80%,#f0ece4 100%);
+}
+
+/* Fine paper texture overlay */
+.card-texture{
+  position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(0deg,rgba(0,0,80,0.012) 0px,transparent 1px,transparent 3px),
+    repeating-linear-gradient(90deg,rgba(0,0,80,0.008) 0px,transparent 1px,transparent 4px);
+  opacity:0.8;
+}
+
+/* Security microprint background pattern */
+.card-security{
+  position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(45deg,
+      rgba(0,40,140,0.025) 0px,rgba(0,40,140,0.025) 0.5px,
+      transparent 0.5px,transparent 8px),
+    repeating-linear-gradient(-45deg,
+      rgba(0,40,140,0.018) 0px,rgba(0,40,140,0.018) 0.5px,
+      transparent 0.5px,transparent 10px);
+}
+
+/* Border — thin blue double rule like real card */
+.card-border-outer{
+  position:absolute;
+  top:8px;left:10px;right:10px;bottom:8px;
+  border:1.5px solid #1a3a8a;
+  border-radius:2px;
+  pointer-events:none;
+}
+.card-border-inner{
+  position:absolute;
+  top:12px;left:14px;right:14px;bottom:12px;
+  border:0.5px solid rgba(26,58,138,0.4);
+  border-radius:1px;
+  pointer-events:none;
+}
+
+/* Corner ornaments */
+.corner{position:absolute;width:14px;height:14px;border-color:#1a3a8a;border-style:solid;}
+.corner.tl{top:6px;left:8px;border-width:2px 0 0 2px;}
+.corner.tr{top:6px;right:8px;border-width:2px 2px 0 0;}
+.corner.bl{bottom:6px;left:8px;border-width:0 0 2px 2px;}
+.corner.br{bottom:6px;right:8px;border-width:0 2px 2px 0;}
+
+/* Header — "United Regions of Forma" government name */
+.card-agency{
+  position:absolute;
+  top:20px;left:0;right:0;
+  text-align:center;
+  font-family:'Libre Baskerville',serif;
+  font-size:10.5px;
+  font-weight:400;
+  letter-spacing:2px;
+  color:#1a3a8a;
+  text-transform:uppercase;
+}
+
+/* Main title — "Social Registry" */
+.card-title{
+  position:absolute;
+  top:36px;left:0;right:0;
+  text-align:center;
+  font-family:'IM Fell English',serif;
+  font-size:22px;
+  font-weight:400;
+  color:#1a2a6a;
+  letter-spacing:1px;
+  line-height:1;
+}
+
+/* Thin rule under title */
+.card-title-rule{
+  position:absolute;
+  top:66px;left:50px;right:50px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,#1a3a8a,#1a3a8a,transparent);
+}
+
+/* THE NUMBER — this is the centerpiece */
+.card-number{
+  position:absolute;
+  top:82px;left:0;right:0;
+  text-align:center;
+  font-family:'DM Mono',monospace;
+  font-size:36px;
+  font-weight:500;
+  color:#0a1a4a;
+  letter-spacing:6px;
+  line-height:1;
+  /* simulate engraved/laser feel */
+  text-shadow:
+    0 1px 0 rgba(255,255,255,0.8),
+    0 -1px 0 rgba(0,0,80,0.15);
+}
+
+/* Name line */
+.card-name-label{
+  position:absolute;
+  top:136px;left:56px;
+  font-size:7.5px;
+  letter-spacing:2px;
+  color:rgba(26,58,138,0.55);
+  text-transform:uppercase;
+  font-family:'DM Mono',monospace;
+}
+.card-name{
+  position:absolute;
+  top:148px;left:56px;
+  font-family:'Libre Baskerville',serif;
+  font-size:14px;
+  font-weight:400;
+  color:#0a1a4a;
+  letter-spacing:1px;
+  font-style:italic;
+}
+
+/* Signature line */
+.card-sig-label{
+  position:absolute;
+  bottom:34px;left:56px;
+  font-size:7px;letter-spacing:1.5px;
+  color:rgba(26,58,138,0.45);
+  text-transform:uppercase;
+  font-family:'DM Mono',monospace;
+}
+.card-sig{
+  position:absolute;
+  bottom:16px;left:56px;
+  font-family:'IM Fell English',serif;
+  font-style:italic;
+  font-size:16px;
+  color:#0a1a4a;
+  letter-spacing:0.5px;
+  border-bottom:0.75px solid rgba(26,58,138,0.3);
+  min-width:160px;
+  padding-bottom:2px;
+}
+
+/* Right side — seal + legal text */
+.card-seal-area{
+  position:absolute;
+  top:90px;right:50px;
+  width:80px;
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+}
+.card-seal{
+  width:60px;height:60px;
+  border-radius:50%;
+  border:1.5px solid rgba(26,58,138,0.25);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  background:radial-gradient(ellipse at center,rgba(26,58,138,0.04) 0%,transparent 70%);
+}
+.card-seal::before{content:'';position:absolute;inset:4px;border-radius:50%;border:0.75px dashed rgba(26,58,138,0.18);}
+.card-seal-inner{
+  text-align:center;
+  font-family:'DM Mono',monospace;
+  font-size:7px;
+  color:rgba(26,58,138,0.35);
+  letter-spacing:1px;
+  line-height:1.5;
+}
+.card-seal-star{font-size:12px;color:rgba(26,58,138,0.3);display:block;}
+
+.card-legal{
+  position:absolute;
+  bottom:16px;right:50px;
+  width:120px;
+  font-family:'DM Mono',monospace;
+  font-size:6px;
+  color:rgba(26,58,138,0.35);
+  letter-spacing:0.5px;
+  line-height:1.6;
+  text-align:right;
+}
+
+/* Form Porn micro-mark */
+.card-fp{
+  position:absolute;
+  bottom:5px;left:0;right:0;
+  text-align:center;
+  font-family:'DM Mono',monospace;
+  font-size:5.5px;
+  color:rgba(26,58,138,0.18);
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+/* ── BACK OF CARD ── */
+.card-back{
+  width:640px;height:270px;
+  position:relative;
+  border-radius:6px;
+  margin-top:20px;
+  overflow:hidden;
+  box-shadow:0 15px 50px rgba(0,0,0,0.6);
+  transform:rotateX(3deg) rotateY(-1deg);
+  transition:transform 0.5s;
+}
+.card-back:hover{transform:rotateX(0) rotateY(0);}
+.card-back-paper{position:absolute;inset:0;background:linear-gradient(155deg,#f5f3ed 0%,#eeebe4 100%);}
+.card-back-mag{position:absolute;top:30px;left:0;right:0;height:45px;background:linear-gradient(180deg,#1a1a1a 0%,#0a0a0a 50%,#1a1a1a 100%);}
+.card-back-text{position:absolute;top:95px;left:40px;right:40px;font-family:'DM Mono',monospace;font-size:7.5px;color:rgba(26,58,138,0.6);line-height:1.8;letter-spacing:0.5px;}
+.card-back-legal{position:absolute;bottom:20px;left:40px;right:40px;font-family:'DM Mono',monospace;font-size:6.5px;color:rgba(26,58,138,0.4);line-height:1.7;border-top:0.5px solid rgba(26,58,138,0.2);padding-top:8px;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="/index.html">← Form Porn</a>
+  <span style="font-size:11px;letter-spacing:3px;color:var(--gold2);">National Registry Card</span>
+  <a href="/pricing.html">$3 Export</a>
+</div>
+<h1>National Registry Card</h1>
+<p class="subtitle">United Regions of Forma · Dept. of Civil Identity · Form Porn Universe</p>
+
+<div class="workspace">
+<div>
+  <div class="panel">
+    <div class="pt">Card Details</div>
+    <div class="field">
+      <label>Registry Number</label>
+      <input type="text" id="f_num" placeholder="000-00-0000" maxlength="11" oninput="formatNum(this);render()">
+    </div>
+    <div class="r2">
+      <div class="field"><label>First & Middle</label><input id="f_first" value="Forma L." oninput="render()"></div>
+      <div class="field"><label>Last Name</label><input id="f_last" value="Papeston" oninput="render()"></div>
+    </div>
+    <div class="field">
+      <label>Signature (type your name)</label>
+      <input id="f_sig" value="Forma L. Papeston" oninput="render()">
+    </div>
+    <div class="field">
+      <label>Issue Year</label>
+      <input id="f_year" value="2024" maxlength="4" oninput="render()">
+    </div>
+  </div>
+  <button class="btn-gold" onclick="exportCard()">⬇ Export Card — $3</button>
+  <button class="btn-outline" onclick="window.print()">🖨 Print</button>
+  <div class="note">⚠ "United Regions of Forma" is a fictional jurisdiction. This is a Form Porn entertainment document — not a real government-issued card.</div>
+</div>
+
+<div class="preview-col">
+  <p class="plabel">Front</p>
+  <div class="card-scene">
+    <div class="card" id="card-front">
+      <div class="card-paper"></div>
+      <div class="card-texture"></div>
+      <div class="card-security"></div>
+      <div class="card-border-outer"></div>
+      <div class="card-border-inner"></div>
+      <div class="corner tl"></div>
+      <div class="corner tr"></div>
+      <div class="corner bl"></div>
+      <div class="corner br"></div>
+
+      <div class="card-agency">United Regions of Forma</div>
+      <div class="card-title">National Registry Card</div>
+      <div class="card-title-rule"></div>
+
+      <div class="card-number" id="d_num">000 · 00 · 0000</div>
+
+      <div class="card-name-label">Name</div>
+      <div class="card-name" id="d_name">Forma L. Papeston</div>
+
+      <div class="card-sig-label">Signature</div>
+      <div class="card-sig" id="d_sig">Forma L. Papeston</div>
+
+      <div class="card-seal-area">
+        <div class="card-seal">
+          <div class="card-seal-inner">
+            <span class="card-seal-star">✦</span>
+            URF<br>DCI
+          </div>
+        </div>
+      </div>
+
+      <div class="card-legal">Issued <span id="d_year">2024</span><br>Dept. of Civil Identity<br>United Regions of Forma</div>
+
+      <div class="card-fp">Form Porn © — Entertainment Use Only — Not a Real Government Document</div>
+    </div>
+
+    <p class="plabel" style="margin-top:18px;">Back</p>
+    <div class="card-back">
+      <div class="card-back-paper"></div>
+      <div class="card-back-mag"></div>
+      <div class="card-back-text">
+        This card is the property of the Department of Civil Identity, United Regions of Forma. Unauthorized reproduction, alteration, or use of this card is prohibited. If found, return to nearest DCI office.
+      </div>
+      <div class="card-back-legal">
+        FOR ENTERTAINMENT & CREATIVE USE ONLY · FORM PORN LLC · NOT A VALID GOVERNMENT DOCUMENT<br>
+        United Regions of Forma — Dept. of Civil Identity — Registry Code §14.8 — formporn.app
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+function formatNum(input){
+  let v=input.value.replace(/\D/g,'');
+  if(v.length>3&&v.length<=5)v=v.slice(0,3)+'-'+v.slice(3);
+  else if(v.length>5)v=v.slice(0,3)+'-'+v.slice(3,5)+'-'+v.slice(5,9);
+  input.value=v;
+}
+function render(){
+  const g=id=>(document.getElementById(id)||{}).value||'';
+  const num=g('f_num')||'000-00-0000';
+  const parts=num.split('-');
+  document.getElementById('d_num').textContent=parts.join(' · ');
+  document.getElementById('d_name').textContent=(g('f_first')+' '+g('f_last')).trim();
+  document.getElementById('d_sig').textContent=g('f_sig');
+  document.getElementById('d_year').textContent=g('f_year')||'2024';
+}
+async function exportCard(){
+  const el=document.getElementById('card-front');
+  const canvas=await html2canvas(el,{scale:4,useCORS:true,backgroundColor:null,logging:false});
+  const link=document.createElement('a');
+  link.download='forma-registry-card.png';
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+}
+// Init with a random number
+document.getElementById('f_num').value='472-88-0197';
+render();
+</script>
+</body>
+</html>

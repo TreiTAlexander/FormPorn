@@ -53,7 +53,7 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 
 <div class="pnl"><h3>Certificate Subject (Person on Certificate)</h3>
 <div class="g2"><div class="fg"><label>Full Name on Certificate</label><input id="bc-name" value="Emily Rose Carter" oninput="update()"></div><div class="fg"><label>Date of Birth</label><input id="bc-dob" value="September 14, 1995" oninput="update()"></div></div>
-<div class="g3"><div class="fg"><label>City of Birth</label><input id="bc-city" value="Las Vegas" oninput="update()"></div><div class="fg"><label>County of Birth</label><input id="bc-county" value="Clark County" oninput="update()"></div><div class="fg"><label>State of Birth</label><input id="bc-state" value="Nevada" oninput="update()"></div></div>
+<div class="g3"><div class="fg"><label>City of Birth</label><input id="bc-city" value="Beverly Hills" oninput="update()"></div><div class="fg"><label>County of Birth</label><input id="bc-county" value="Forma County" oninput="update()"></div><div class="fg"><label>State of Birth</label><input id="bc-state" value="North Forma" oninput="update()"></div></div>
 <div class="g2"><div class="fg"><label>Father's Full Name</label><input id="bc-father" value="Robert James Carter" oninput="update()"></div><div class="fg"><label>Mother's Full Name (maiden)</label><input id="bc-mother" value="Patricia Anne Morrison" oninput="update()"></div></div>
 <div class="fg"><label>Hospital / Place of Birth</label><input id="bc-hospital" value="University Medical Center — Las Vegas" oninput="update()"></div>
 </div>
@@ -162,72 +162,4 @@ I declare under penalty of perjury that the information provided on this form is
 <span>BIRTH CERTIFICATE REQUEST</span><span>STATE OF ${state.toUpperCase()}</span><span>FORM PORN · ENTERTAINMENT ONLY</span></div>
 </div>`;}
 
-update();</script>
-<script src="access.js"></script>
-<script>
-// FormPorn Access Gate — injected by stabilization script
-function _currentForm() {
-  return window.location.pathname.split('/').pop() || 'index.html';
-}
-function downloadPDF(docId) {
-  FP.requireAccess(_currentForm(), function() { _fpDoPDF(docId); });
-}
-function downloadPNG(docId) {
-  FP.requireAccess(_currentForm(), function() { _fpDoPNG(docId); });
-}
-function downloadJPEG(docId) {
-  FP.requireAccess(_currentForm(), function() { _fpDoJPEG(docId); });
-}
-// Legacy aliases used in older forms
-function dlPDF(docId) { downloadPDF(docId); }
-function dlPNG(docId) { downloadPNG(docId); }
-function dlJPEG(docId) { downloadJPEG(docId); }
-
-function _fpDoPDF(docId) {
-  const el = document.getElementById(docId);
-  if (!el) { window.print(); return; }
-  const allStyles = Array.from(document.styleSheets).map(s => {
-    try { return Array.from(s.cssRules).map(r => r.cssText).join('\n'); } catch(e) { return ''; }
-  }).join('\n');
-  const fontLink = document.querySelector('link[href*="fonts.googleapis"]');
-  const w = window.open('', '_blank', 'width=900,height=700');
-  w.document.write('<!DOCTYPE html><html><head><title>Form Porn</title>');
-  if (fontLink) w.document.write(fontLink.outerHTML);
-  w.document.write('<style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#ddd;display:flex;justify-content:center;padding:30px;}@media print{body{background:white;padding:0;}@page{margin:0.5in;}}' + allStyles + '</style></head><body>');
-  w.document.write(el.outerHTML);
-  w.document.write('<scr'+'ipt>document.fonts.ready.then(()=>{setTimeout(()=>window.print(),800)});<\/scr'+'ipt></body></html>');
-  w.document.close();
-}
-function _fpDoPNG(docId) {
-  const el = document.getElementById(docId);
-  if (!el) { alert('Generate a document first.'); return; }
-  function capture() {
-    html2canvas(el, {scale:3, useCORS:true, backgroundColor:'#ffffff', logging:false}).then(c => {
-      const a = document.createElement('a'); a.download = 'formporn.png';
-      a.href = c.toDataURL('image/png', 1.0); a.click();
-    }).catch(() => alert('PNG failed. Use PDF instead.'));
-  }
-  if (typeof html2canvas === 'undefined') {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    s.onload = capture; document.head.appendChild(s);
-  } else { capture(); }
-}
-function _fpDoJPEG(docId) {
-  const el = document.getElementById(docId);
-  if (!el) { alert('Generate a document first.'); return; }
-  function capture() {
-    html2canvas(el, {scale:2, useCORS:true, backgroundColor:'#ffffff', logging:false}).then(c => {
-      const a = document.createElement('a'); a.download = 'formporn.jpg';
-      a.href = c.toDataURL('image/jpeg', 0.95); a.click();
-    }).catch(() => alert('JPEG failed. Use PDF instead.'));
-  }
-  if (typeof html2canvas === 'undefined') {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    s.onload = capture; document.head.appendChild(s);
-  } else { capture(); }
-}
-</script>
-
-</body></html>
+update();</script></body></html>

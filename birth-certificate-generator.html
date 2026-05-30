@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Certificate of Live Birth — Form Porn</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#06070f;--panel:#0d0e1c;--gold:#c9a84c;--gold2:#e8c96a;--gr:#5a6b88;--wh:#fff;--border:rgba(200,170,90,0.18);}
+body{background:var(--bg);color:var(--wh);font-family:'DM Mono',monospace;min-height:100vh;padding:24px 16px 80px;display:flex;flex-direction:column;align-items:center;}
+.topbar{width:100%;max-width:1200px;display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.topbar a{color:var(--gold);text-decoration:none;font-size:11px;letter-spacing:2px;}
+h1{font-family:'Playfair Display',serif;font-size:24px;color:var(--gold2);margin-bottom:3px;text-align:center;}
+.subtitle{font-size:10px;letter-spacing:3px;color:var(--gr);margin-bottom:28px;text-align:center;}
+.workspace{display:grid;grid-template-columns:300px 1fr;gap:28px;width:100%;max-width:1200px;align-items:start;}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:12px;}
+.pt{font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:10px;}
+.field label{display:block;font-size:8px;letter-spacing:2px;color:var(--gr);text-transform:uppercase;margin-bottom:4px;}
+.field input,.field select{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(200,170,90,0.15);border-radius:4px;padding:7px 10px;color:var(--wh);font-family:'DM Mono',monospace;font-size:11px;outline:none;transition:border 0.2s;}
+.field input:focus{border-color:var(--gold);}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.r4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;}
+.btn-gold{width:100%;padding:11px;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#07080f;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:6px;cursor:pointer;font-weight:700;margin-top:6px;}
+.btn-outline{width:100%;padding:9px;background:transparent;color:var(--gold);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:6px;cursor:pointer;margin-top:6px;}
+.note{margin-top:10px;padding:8px;background:rgba(255,100,100,0.05);border:1px solid rgba(255,100,100,0.15);border-radius:4px;font-size:8px;color:rgba(255,150,150,0.7);line-height:1.6;}
+.preview-col{position:sticky;top:20px;}
+.plabel{font-size:9px;letter-spacing:3px;color:var(--gr);text-transform:uppercase;margin-bottom:10px;text-align:center;}
+
+/* ══════════════════════════════════════════
+   BIRTH CERTIFICATE
+   Real format: structured grid of fields,
+   parchment/cream color, ornate serif header,
+   official seals, double-rule borders,
+   registrar + physician signatures.
+   Letter size: 8.5" × 11" → 720 × 936px
+══════════════════════════════════════════ */
+.cert{
+  width:720px;
+  background:linear-gradient(168deg,#faf7ef 0%,#f4f0e2 25%,#edeadb 60%,#f2eedd 85%,#f6f2e6 100%);
+  position:relative;
+  overflow:hidden;
+  font-family:'Cormorant Garamond',serif;
+  color:#1a1608;
+  box-shadow:0 30px 90px rgba(0,0,0,0.75);
+}
+
+/* Parchment aging vignette */
+.cert-vignette{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 0% 0%,rgba(160,120,60,0.08) 0%,transparent 40%),
+    radial-gradient(ellipse at 100% 0%,rgba(160,120,60,0.06) 0%,transparent 40%),
+    radial-gradient(ellipse at 0% 100%,rgba(100,80,40,0.07) 0%,transparent 35%),
+    radial-gradient(ellipse at 100% 100%,rgba(120,90,40,0.08) 0%,transparent 35%),
+    radial-gradient(ellipse at center,transparent 50%,rgba(140,100,50,0.04) 100%);
+}
+
+/* Fine paper grain */
+.cert-grain{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  opacity:0.7;
+}
+
+/* Ornate outer border — double rule */
+.cert-border-1{position:absolute;top:14px;left:14px;right:14px;bottom:14px;border:2.5px solid rgba(120,90,30,0.4);pointer-events:none;}
+.cert-border-2{position:absolute;top:19px;left:19px;right:19px;bottom:19px;border:0.75px solid rgba(120,90,30,0.2);pointer-events:none;}
+
+/* Corner rosettes — CSS only */
+.c-corner{position:absolute;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:14px;color:rgba(120,90,30,0.35);line-height:1;}
+.c-corner.tl{top:12px;left:12px;}
+.c-corner.tr{top:12px;right:12px;}
+.c-corner.bl{bottom:12px;left:12px;}
+.c-corner.br{bottom:12px;right:12px;}
+
+/* Side decorative rules */
+.cert-side-l{position:absolute;top:28px;left:24px;bottom:28px;width:3px;background:repeating-linear-gradient(180deg,rgba(120,90,30,0.2) 0px,rgba(120,90,30,0.2) 4px,transparent 4px,transparent 8px);}
+.cert-side-r{position:absolute;top:28px;right:24px;bottom:28px;width:3px;background:repeating-linear-gradient(180deg,rgba(120,90,30,0.2) 0px,rgba(120,90,30,0.2) 4px,transparent 4px,transparent 8px);}
+
+/* Content area */
+.cert-content{padding:32px 46px 36px;}
+
+/* Header */
+.cert-state{text-align:center;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:4px;color:rgba(80,60,20,0.55);text-transform:uppercase;margin-bottom:3px;}
+.cert-dept{text-align:center;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:3px;color:rgba(80,60,20,0.65);text-transform:uppercase;margin-bottom:3px;}
+
+/* Main decorative title */
+.cert-title-wrap{text-align:center;margin:10px 0 5px;}
+.cert-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:#1a1208;letter-spacing:1px;line-height:1;}
+.cert-title-sub{font-family:'IM Fell English',serif;font-style:italic;font-size:14px;color:rgba(80,60,20,0.6);letter-spacing:2px;margin-top:3px;}
+
+/* Decorative horizontal rule */
+.cert-rule-deco{
+  display:flex;align-items:center;gap:8px;margin:10px 0;
+}
+.cert-rule-line{flex:1;height:1.5px;background:linear-gradient(90deg,transparent,rgba(120,90,30,0.4),rgba(120,90,30,0.4),transparent);}
+.cert-rule-ornament{color:rgba(120,90,30,0.5);font-size:12px;flex-shrink:0;}
+
+/* Registry number */
+.cert-regnum{text-align:right;font-family:'DM Mono',monospace;font-size:8.5px;color:rgba(80,60,20,0.45);letter-spacing:1.5px;margin-bottom:12px;}
+
+/* Data section header */
+.cert-section-title{
+  font-family:'DM Mono',monospace;font-size:8px;letter-spacing:2.5px;text-transform:uppercase;
+  color:rgba(80,60,20,0.5);background:rgba(120,90,30,0.06);
+  padding:4px 8px;margin-bottom:0;border-left:2.5px solid rgba(120,90,30,0.35);
+}
+
+/* Data grid */
+.cert-grid{
+  display:grid;
+  border:0.75px solid rgba(120,90,30,0.2);
+  margin-bottom:10px;
+}
+.cert-grid.cols2{grid-template-columns:1fr 1fr;}
+.cert-grid.cols3{grid-template-columns:1fr 1fr 1fr;}
+.cert-grid.cols4{grid-template-columns:1fr 1fr 1fr 1fr;}
+
+.cert-cell{
+  padding:7px 10px 6px;
+  border-right:0.5px solid rgba(120,90,30,0.15);
+  border-bottom:0.5px solid rgba(120,90,30,0.12);
+}
+.cert-cell:last-child,.cert-cell.no-right{border-right:none;}
+.cert-cell.span2{grid-column:span 2;}
+.cert-cell.span3{grid-column:span 3;}
+.cert-cell.full{grid-column:1/-1;}
+.cert-cell.header{background:rgba(120,90,30,0.05);grid-column:1/-1;padding:4px 10px;}
+
+.cert-cell-label{font-family:'DM Mono',monospace;font-size:6.5px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(80,60,20,0.45);margin-bottom:2px;}
+.cert-cell-value{font-family:'Cormorant Garamond',serif;font-size:14px;font-weight:600;color:#1a1208;line-height:1.2;min-height:18px;}
+.cert-cell-value.sm{font-size:12px;}
+.cert-cell-value.lg{font-size:18px;font-weight:700;}
+
+/* Attestation paragraph */
+.cert-attest{
+  font-family:'IM Fell English',serif;
+  font-size:12px;font-style:italic;
+  color:rgba(50,38,12,0.65);
+  line-height:1.7;text-align:center;
+  margin:12px 0;padding:0 24px;
+}
+
+/* Signature block */
+.cert-sig-row{
+  display:grid;grid-template-columns:1fr 120px 1fr;
+  gap:24px;margin-top:16px;align-items:flex-end;
+}
+.cert-sig-block{text-align:center;}
+.cert-sig-line{
+  border-bottom:0.75px solid rgba(80,60,20,0.35);
+  margin-bottom:4px;height:36px;
+  display:flex;align-items:flex-end;justify-content:center;
+  padding-bottom:3px;
+}
+.cert-sig-name{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:17px;color:#1a1208;}
+.cert-sig-title{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1.5px;color:rgba(80,60,20,0.45);text-transform:uppercase;}
+
+/* CSS Seal */
+.cert-seal{
+  width:90px;height:90px;border-radius:50%;
+  border:2px solid rgba(80,60,20,0.22);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;
+  position:relative;margin:0 auto;
+  background:radial-gradient(ellipse at center,rgba(200,160,80,0.07) 0%,transparent 70%);
+}
+.cert-seal::before{content:'';position:absolute;inset:5px;border-radius:50%;border:1px solid rgba(80,60,20,0.12);}
+.cert-seal::after{content:'';position:absolute;inset:2px;border-radius:50%;border:0.5px dashed rgba(80,60,20,0.1);}
+.cert-seal-star{font-size:16px;color:rgba(120,90,30,0.35);}
+.cert-seal-text{font-family:'DM Mono',monospace;font-size:7px;letter-spacing:1px;color:rgba(80,60,20,0.35);text-align:center;line-height:1.5;}
+
+/* Barcode strip */
+.cert-barcode{position:absolute;bottom:32px;right:46px;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.cert-barcode-lines{display:flex;gap:0.8px;height:32px;align-items:flex-end;}
+.cert-barcode-lines span{display:inline-block;background:rgba(30,20,8,0.38);border-radius:0.5px;}
+.cert-barcode-num{font-family:'DM Mono',monospace;font-size:6.5px;color:rgba(30,20,8,0.3);letter-spacing:0.5px;}
+
+/* FP mark */
+.cert-fp{position:absolute;bottom:18px;left:46px;font-family:'DM Mono',monospace;font-size:6.5px;color:rgba(120,90,30,0.22);letter-spacing:2px;text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="/index.html">← Form Porn</a>
+  <span style="font-size:11px;letter-spacing:3px;color:var(--gold2);">Birth Certificate</span>
+  <a href="/pricing.html">$3 Export</a>
+</div>
+<h1>Certificate of Live Birth</h1>
+<p class="subtitle">Forma County · United Regions of Forma · Dept. of Vital Records</p>
+
+<div class="workspace">
+<div>
+  <div class="panel">
+    <div class="pt">Child's Information</div>
+    <div class="field"><label>First Name</label><input id="c_first" value="Forma" oninput="render()"></div>
+    <div class="r2">
+      <div class="field"><label>Middle Name</label><input id="c_mid" value="Luxe" oninput="render()"></div>
+      <div class="field"><label>Last Name</label><input id="c_last" value="Papeston" oninput="render()"></div>
+    </div>
+    <div class="r3">
+      <div class="field"><label>Date of Birth</label><input id="c_dob" value="March 15, 1990" oninput="render()"></div>
+      <div class="field"><label>Time</label><input id="c_tob" value="7:42 AM" oninput="render()"></div>
+      <div class="field"><label>Sex</label><select id="c_sex" onchange="render()"><option>Female</option><option>Male</option><option>Undesignated</option></select></div>
+    </div>
+    <div class="r2">
+      <div class="field"><label>City of Birth</label><input id="c_city" value="Beverly Hills" oninput="render()"></div>
+      <div class="field"><label>County</label><input id="c_county" value="Forma County" oninput="render()"></div>
+    </div>
+    <div class="field"><label>Hospital / Facility</label><input id="c_hosp" value="Forma General Medical Center" oninput="render()"></div>
+  </div>
+
+  <div class="panel">
+    <div class="pt">Parent A</div>
+    <div class="field"><label>Full Name</label><input id="pa_name" value="Portia Forme Papeston" oninput="render()"></div>
+    <div class="r2">
+      <div class="field"><label>Date of Birth</label><input id="pa_dob" value="June 8, 1965" oninput="render()"></div>
+      <div class="field"><label>Birthplace</label><input id="pa_birth" value="Formavia, URF" oninput="render()"></div>
+    </div>
+    <div class="field"><label>Occupation</label><input id="pa_occ" value="Attorney" oninput="render()"></div>
+  </div>
+
+  <div class="panel">
+    <div class="pt">Parent B</div>
+    <div class="field"><label>Full Name</label><input id="pb_name" value="Reginald Luxe Papeston" oninput="render()"></div>
+    <div class="r2">
+      <div class="field"><label>Date of Birth</label><input id="pb_dob" value="February 22, 1962" oninput="render()"></div>
+      <div class="field"><label>Birthplace</label><input id="pb_birth" value="West Forma, URF" oninput="render()"></div>
+    </div>
+    <div class="field"><label>Occupation</label><input id="pb_occ" value="Architect" oninput="render()"></div>
+  </div>
+
+  <div class="panel">
+    <div class="pt">Registration</div>
+    <div class="r2">
+      <div class="field"><label>Attending Physician</label><input id="r_doc" value="Dr. Elara Voss, M.D." oninput="render()"></div>
+      <div class="field"><label>File Date</label><input id="r_filedate" value="March 18, 1990" oninput="render()"></div>
+    </div>
+    <div class="r2">
+      <div class="field"><label>Registrar</label><input id="r_reg" value="M. Holloway" oninput="render()"></div>
+      <div class="field"><label>Registry No.</label><input id="r_num" value="URF-BC-1990-044721" oninput="render()"></div>
+    </div>
+  </div>
+
+  <button class="btn-gold" onclick="exportCert()">⬇ Export — $3</button>
+  <button class="btn-outline" onclick="window.print()">🖨 Print</button>
+  <div class="note">⚠ "Forma County, United Regions of Forma" is fictional. Not a real vital record. Entertainment use only.</div>
+</div>
+
+<div class="preview-col">
+  <p class="plabel">Live Preview</p>
+  <div class="cert" id="cert">
+    <div class="cert-vignette"></div>
+    <div class="cert-grain"></div>
+    <div class="cert-border-1"></div>
+    <div class="cert-border-2"></div>
+    <div class="c-corner tl">✦</div>
+    <div class="c-corner tr">✦</div>
+    <div class="c-corner bl">✦</div>
+    <div class="c-corner br">✦</div>
+    <div class="cert-side-l"></div>
+    <div class="cert-side-r"></div>
+
+    <div class="cert-content">
+      <!-- Header -->
+      <div class="cert-state">United Regions of Forma · Forma County</div>
+      <div class="cert-dept">Department of Vital Records &amp; Civil Registration</div>
+      <div class="cert-rule-deco"><div class="cert-rule-line"></div><span class="cert-rule-ornament">❧</span><div class="cert-rule-line"></div></div>
+      <div class="cert-title-wrap">
+        <div class="cert-title">Certificate of Live Birth</div>
+        <div class="cert-title-sub">Certificato di Nascita · Official Registry Document</div>
+      </div>
+      <div class="cert-rule-deco"><div class="cert-rule-line"></div><span class="cert-rule-ornament">❧</span><div class="cert-rule-line"></div></div>
+
+      <div class="cert-regnum">Registry No. <span id="d_rnum">URF-BC-1990-044721</span> &nbsp;|&nbsp; Filed: <span id="d_filedate">March 18, 1990</span></div>
+
+      <!-- Section I: Child -->
+      <div class="cert-section-title">Section I — Child's Information</div>
+      <div class="cert-grid cols3" style="border-top:none;">
+        <div class="cert-cell">
+          <div class="cert-cell-label">First Name / Nome</div>
+          <div class="cert-cell-value lg" id="d_first">Forma</div>
+        </div>
+        <div class="cert-cell">
+          <div class="cert-cell-label">Middle Name / Secondo Nome</div>
+          <div class="cert-cell-value lg" id="d_mid">Luxe</div>
+        </div>
+        <div class="cert-cell no-right">
+          <div class="cert-cell-label">Family Name / Cognome</div>
+          <div class="cert-cell-value lg" id="d_last">Papeston</div>
+        </div>
+        <div class="cert-cell">
+          <div class="cert-cell-label">Date of Birth / Data di Nascita</div>
+          <div class="cert-cell-value sm" id="d_dob">March 15, 1990</div>
+        </div>
+        <div class="cert-cell">
+          <div class="cert-cell-label">Time of Birth / Ora</div>
+          <div class="cert-cell-value sm" id="d_tob">7:42 AM</div>
+        </div>
+        <div class="cert-cell no-right">
+          <div class="cert-cell-label">Sex / Sesso</div>
+          <div class="cert-cell-value sm" id="d_sex">Female</div>
+        </div>
+        <div class="cert-cell span2">
+          <div class="cert-cell-label">Place of Birth (City / County)</div>
+          <div class="cert-cell-value sm" id="d_place">Beverly Hills, Forma County</div>
+        </div>
+        <div class="cert-cell no-right">
+          <div class="cert-cell-label">Hospital / Facility</div>
+          <div class="cert-cell-value sm" id="d_hosp">Forma General Medical Center</div>
+        </div>
+      </div>
+
+      <!-- Section II: Parent A -->
+      <div class="cert-section-title" style="margin-top:8px;">Section II — Parent / Guardian A</div>
+      <div class="cert-grid cols3" style="border-top:none;">
+        <div class="cert-cell span2">
+          <div class="cert-cell-label">Full Legal Name</div>
+          <div class="cert-cell-value sm" id="d_pa_name">Portia Forme Papeston</div>
+        </div>
+        <div class="cert-cell no-right">
+          <div class="cert-cell-label">Occupation</div>
+          <div class="cert-cell-value sm" id="d_pa_occ">Attorney</div>
+        </div>
+        <div class="cert-cell">
+          <div class="cert-cell-label">Date of Birth</div>
+          <div class="cert-cell-value sm" id="d_pa_dob">June 8, 1965</div>
+        </div>
+        <div class="cert-cell span2 no-right">
+          <div class="cert-cell-label">Place of Birth</div>
+          <div class="cert-cell-value sm" id="d_pa_birth">Formavia, URF</div>
+        </div>
+      </div>
+
+      <!-- Section III: Parent B -->
+      <div class="cert-section-title" style="margin-top:8px;">Section III — Parent / Guardian B</div>
+      <div class="cert-grid cols3" style="border-top:none;">
+        <div class="cert-cell span2">
+          <div class="cert-cell-label">Full Legal Name</div>
+          <div class="cert-cell-value sm" id="d_pb_name">Reginald Luxe Papeston</div>
+        </div>
+        <div class="cert-cell no-right">
+          <div class="cert-cell-label">Occupation</div>
+          <div class="cert-cell-value sm" id="d_pb_occ">Architect</div>
+        </div>
+        <div class="cert-cell">
+          <div class="cert-cell-label">Date of Birth</div>
+          <div class="cert-cell-value sm" id="d_pb_dob">February 22, 1962</div>
+        </div>
+        <div class="cert-cell span2 no-right">
+          <div class="cert-cell-label">Place of Birth</div>
+          <div class="cert-cell-value sm" id="d_pb_birth">West Forma, URF</div>
+        </div>
+      </div>
+
+      <!-- Section IV: Medical -->
+      <div class="cert-section-title" style="margin-top:8px;">Section IV — Medical &amp; Registration</div>
+      <div class="cert-grid cols2" style="border-top:none;">
+        <div class="cert-cell">
+          <div class="cert-cell-label">Attending Physician / Midwife</div>
+          <div class="cert-cell-value sm" id="d_doc">Dr. Elara Voss, M.D.</div>
+        </div>
+        <div class="cert-cell no-right">
+          <div class="cert-cell-label">Medical Facility</div>
+          <div class="cert-cell-value sm" id="d_hosp2">Forma General Medical Center</div>
+        </div>
+      </div>
+
+      <!-- Attestation -->
+      <div class="cert-attest">
+        I hereby certify that the foregoing is a true and correct record of the birth of the above-named person,
+        as registered in the Office of Vital Records, Forma County, United Regions of Forma,
+        in accordance with URF Registry Code §22.4.
+      </div>
+
+      <div class="cert-rule-deco"><div class="cert-rule-line"></div><span class="cert-rule-ornament">—</span><div class="cert-rule-line"></div></div>
+
+      <!-- Signature block -->
+      <div class="cert-sig-row">
+        <div class="cert-sig-block">
+          <div class="cert-sig-line"><span class="cert-sig-name" id="d_sig1">Dr. Elara Voss, M.D.</span></div>
+          <div class="cert-sig-title">Attending Physician</div>
+        </div>
+        <div>
+          <div class="cert-seal">
+            <div class="cert-seal-star">✦</div>
+            <div class="cert-seal-text">FORMA<br>COUNTY<br>VITAL<br>RECORDS</div>
+            <div class="cert-seal-star">✦</div>
+          </div>
+        </div>
+        <div class="cert-sig-block">
+          <div class="cert-sig-line"><span class="cert-sig-name" id="d_sig2">M. Holloway</span></div>
+          <div class="cert-sig-title">County Registrar</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Barcode -->
+    <div class="cert-barcode">
+      <div class="cert-barcode-lines" id="barcodeLines"></div>
+      <div class="cert-barcode-num" id="barcodeNum">URF·DVR·1990·044721</div>
+    </div>
+
+    <div class="cert-fp">Form Porn © · Entertainment Use Only · Forma County URF · formporn.app</div>
+  </div>
+</div>
+</div>
+
+<script>
+function makeBarcode(seed){
+  const el=document.getElementById('barcodeLines');
+  el.innerHTML='';
+  const s=(seed||'1990044721').replace(/\D/g,'');
+  const ws=[1,2,1,1,2,1,1,1,2,1,2,1,1,2,1,1,1,2,1,1,2,1,1,1,2,1,2,1,1,1,2,1,1,1,2,1,1,2,1,1,1,2];
+  const hs=[100,70,100,80,90,100,60,100,80,70,100,90,80,100,70,60,100,80,90,100,70,100,80,60,100,90,80,70,100,60,90,100,80,70,100,60,80,100,90,80,70,100];
+  for(let i=0;i<42;i++){
+    const sp=document.createElement('span');
+    const d=parseInt(s[i%s.length])||1;
+    sp.style.cssText=`width:${ws[i]*0.85+(d%2)*0.4}px;height:${hs[i]*0.32}px;display:inline-block;background:rgba(30,20,8,0.38);border-radius:0.5px;align-self:flex-end;`;
+    el.appendChild(sp);
+  }
+}
+
+function render(){
+  const g=id=>(document.getElementById(id)||{}).value||'';
+  document.getElementById('d_first').textContent=g('c_first');
+  document.getElementById('d_mid').textContent=g('c_mid');
+  document.getElementById('d_last').textContent=g('c_last');
+  document.getElementById('d_dob').textContent=g('c_dob');
+  document.getElementById('d_tob').textContent=g('c_tob');
+  document.getElementById('d_sex').textContent=g('c_sex');
+  document.getElementById('d_place').textContent=g('c_city')+', '+g('c_county');
+  document.getElementById('d_hosp').textContent=g('c_hosp');
+  document.getElementById('d_hosp2').textContent=g('c_hosp');
+  document.getElementById('d_pa_name').textContent=g('pa_name');
+  document.getElementById('d_pa_dob').textContent=g('pa_dob');
+  document.getElementById('d_pa_birth').textContent=g('pa_birth');
+  document.getElementById('d_pa_occ').textContent=g('pa_occ');
+  document.getElementById('d_pb_name').textContent=g('pb_name');
+  document.getElementById('d_pb_dob').textContent=g('pb_dob');
+  document.getElementById('d_pb_birth').textContent=g('pb_birth');
+  document.getElementById('d_pb_occ').textContent=g('pb_occ');
+  document.getElementById('d_doc').textContent=g('r_doc');
+  document.getElementById('d_sig1').textContent=g('r_doc');
+  document.getElementById('d_sig2').textContent=g('r_reg');
+  document.getElementById('d_rnum').textContent=g('r_num');
+  document.getElementById('d_filedate').textContent=g('r_filedate');
+  const rn=g('r_num').replace(/\D/g,'');
+  document.getElementById('barcodeNum').textContent='URF·DVR·'+rn;
+  makeBarcode(rn);
+}
+
+async function exportCert(){
+  const el=document.getElementById('cert');
+  const canvas=await html2canvas(el,{scale:3,useCORS:true,backgroundColor:'#f5f2ea',logging:false});
+  const link=document.createElement('a');
+  link.download='forma-birth-certificate.png';
+  link.href=canvas.toDataURL('image/png');
+  link.click();
+}
+
+render();
+makeBarcode('1990044721');
+</script>
+</body>
+</html>

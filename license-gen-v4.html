@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forma Operator License Generator — Form Porn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=DM+Mono:wght@300;400;500&family=Oswald:wght@300;400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+/* ─── RESET & PAGE ─────────────────────── */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#06070f;--panel:#0d0e1c;--border:rgba(200,170,90,0.18);
+  --gold:#c9a84c;--gold2:#e8c96a;--gr:#5a6b88;--wh:#fff;
+  --red:#e03030;
+}
+body{
+  background:var(--bg);color:var(--wh);
+  font-family:'DM Mono',monospace;
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+  padding:24px 16px 100px;
+}
+.topbar{
+  width:100%;max-width:1180px;
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:28px;padding-bottom:14px;
+  border-bottom:1px solid var(--border);
+}
+.topbar a{color:var(--gold);text-decoration:none;font-size:11px;letter-spacing:2px;}
+.topbar .brand{font-size:12px;letter-spacing:3px;color:var(--gold2);}
+h1{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--gold2);margin-bottom:3px;text-align:center;}
+.subtitle{font-size:10px;letter-spacing:3px;color:var(--gr);margin-bottom:32px;text-align:center;}
+
+.workspace{
+  display:grid;
+  grid-template-columns:300px 1fr;
+  gap:28px;width:100%;max-width:1180px;
+  align-items:start;
+}
+
+/* ─── CONTROL PANEL ─────────────────────── */
+.panel{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;padding:20px;
+  margin-bottom:12px;
+}
+.panel-title{
+  font-size:9px;letter-spacing:3px;color:var(--gold);
+  text-transform:uppercase;margin-bottom:14px;
+  padding-bottom:8px;border-bottom:1px solid var(--border);
+}
+.field{margin-bottom:11px;}
+.field label{
+  display:block;font-size:8px;letter-spacing:2px;
+  color:var(--gr);text-transform:uppercase;margin-bottom:4px;
+}
+.field input,.field select{
+  width:100%;background:rgba(255,255,255,0.04);
+  border:1px solid rgba(200,170,90,0.15);
+  border-radius:4px;padding:8px 10px;
+  color:var(--wh);font-family:'DM Mono',monospace;
+  font-size:11px;outline:none;transition:border 0.2s;
+}
+.field input:focus,.field select:focus{border-color:var(--gold);}
+.field input::placeholder{color:rgba(255,255,255,0.18);}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+
+.photo-drop{
+  border:1.5px dashed rgba(200,170,90,0.25);
+  border-radius:6px;padding:14px;text-align:center;
+  cursor:pointer;position:relative;transition:border 0.2s;
+  min-height:80px;display:flex;align-items:center;
+  justify-content:center;flex-direction:column;gap:4px;
+}
+.photo-drop:hover{border-color:var(--gold);}
+.photo-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.photo-drop p{font-size:9px;color:var(--gr);letter-spacing:1px;}
+.photo-thumb-preview{width:60px;height:75px;object-fit:cover;border-radius:2px;display:none;}
+
+.btn-gold{
+  width:100%;padding:11px;
+  background:linear-gradient(135deg,#c9a84c,#e8c96a);
+  color:#07080f;font-family:'DM Mono',monospace;
+  font-size:10px;letter-spacing:2.5px;text-transform:uppercase;
+  border:none;border-radius:6px;cursor:pointer;font-weight:700;
+  margin-top:6px;transition:opacity 0.2s;
+}
+.btn-gold:hover{opacity:0.88;}
+.btn-outline{
+  width:100%;padding:9px;background:transparent;
+  color:var(--gold);font-family:'DM Mono',monospace;
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  border:1px solid var(--border);border-radius:6px;
+  cursor:pointer;margin-top:6px;transition:all 0.2s;
+}
+.btn-outline:hover{border-color:var(--gold);}
+
+.note{
+  margin-top:12px;padding:9px;
+  background:rgba(224,48,48,0.06);
+  border:1px solid rgba(224,48,48,0.18);
+  border-radius:4px;font-size:8px;
+  color:rgba(255,140,140,0.7);line-height:1.6;letter-spacing:0.3px;
+}
+
+/* ─── PREVIEW COLUMN ─────────────────────── */
+.preview-col{position:sticky;top:20px;}
+.preview-label{
+  font-size:9px;letter-spacing:3px;color:var(--gr);
+  text-transform:uppercase;margin-bottom:10px;text-align:center;
+}
+
+/* ════════════════════════════════════════════════
+   THE LICENSE CARD
+   Actual CR80 proportions: 85.6mm × 54mm
+   We render at 760 × 480px (screen)
+   Export at 3x = 2280 × 1440px (print-quality)
+════════════════════════════════════════════════ */
+.dl-scene{
+  width:760px;
+  perspective:2000px;
+}
+.dl-front{
+  width:760px;height:480px;
+  border-radius:16px;
+  position:relative;overflow:hidden;
+  box-shadow:
+    0 40px 100px rgba(0,0,0,0.85),
+    0 0 0 1.5px rgba(255,255,255,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+  transform:rotateX(2deg) rotateY(-1.5deg);
+  transition:transform 0.5s ease;
+  font-family:'Barlow Condensed',sans-serif;
+  cursor:default;
+}
+.dl-front:hover{transform:rotateX(0) rotateY(0) scale(1.005);}
+
+/* ── SCENIC BACKGROUND LAYER ── */
+.dl-bg{position:absolute;inset:0;z-index:0;}
+
+/* ── CARD SURFACE GLOSS (polycarbonate feel) ── */
+.dl-gloss{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(135deg,
+      rgba(255,255,255,0.08) 0%,
+      rgba(255,255,255,0.0) 30%,
+      rgba(255,255,255,0.04) 70%,
+      rgba(255,255,255,0.09) 100%);
+}
+
+/* ── GUILLOCHE SECURITY PATTERN ── */
+.dl-guilloche{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  opacity:0.28;
+  background-image:
+    repeating-linear-gradient(0deg,
+      transparent 0px,transparent 5px,
+      rgba(255,255,255,0.06) 5px,rgba(255,255,255,0.06) 6px),
+    repeating-linear-gradient(90deg,
+      transparent 0px,transparent 5px,
+      rgba(255,255,255,0.04) 5px,rgba(255,255,255,0.04) 6px),
+    repeating-linear-gradient(55deg,
+      transparent 0px,transparent 10px,
+      rgba(255,255,255,0.035) 10px,rgba(255,255,255,0.035) 11px),
+    repeating-linear-gradient(-55deg,
+      transparent 0px,transparent 10px,
+      rgba(255,255,255,0.025) 10px,rgba(255,255,255,0.025) 11px);
+}
+
+/* ── DARK GRADIENT OVER BOTTOM HALF (for text readability) ── */
+.dl-textmask{
+  position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.15) 0%,
+    rgba(0,0,0,0.05) 35%,
+    rgba(0,0,0,0.6) 65%,
+    rgba(0,0,0,0.82) 100%
+  );
+}
+
+/* ── LEFT DATA STRIP (behind text over background) ── */
+.dl-data-strip{
+  position:absolute;
+  top:58px;left:144px;right:0;bottom:0;
+  z-index:2;pointer-events:none;
+  background:linear-gradient(90deg,
+    rgba(0,0,0,0.45) 0%,
+    rgba(0,0,0,0.15) 30%,
+    rgba(0,0,0,0.0) 70%
+  );
+}
+/* ── HEADER BAND ── */
+.dl-header{
+  position:absolute;top:0;left:0;right:0;
+  height:58px;z-index:10;
+  display:flex;align-items:center;
+  justify-content:space-between;
+  padding:0 22px;
+}
+.dl-header-bg{
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,
+    rgba(0,0,0,0.72) 0%,
+    rgba(0,0,0,0.48) 60%,
+    rgba(0,0,0,0.18) 100%);
+  backdrop-filter:blur(2px);
+}
+.dl-state-name{
+  position:relative;z-index:1;
+  font-family:'Oswald',sans-serif;
+  font-size:28px;font-weight:700;
+  letter-spacing:5px;
+  color:#fff;
+  text-shadow:0 1px 8px rgba(0,0,0,0.6);
+  line-height:1;
+}
+.dl-header-right{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;
+  align-items:flex-end;gap:2px;
+}
+.dl-doc-type{
+  font-family:'Oswald',sans-serif;
+  font-size:13px;font-weight:500;
+  letter-spacing:3px;color:rgba(255,255,255,0.9);
+  text-transform:uppercase;
+}
+.dl-realid{
+  display:flex;align-items:center;gap:5px;
+}
+.dl-star{
+  width:16px;height:16px;
+  background:var(--gold);
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+}
+.dl-realid-text{
+  font-size:9px;letter-spacing:2px;
+  color:rgba(255,255,255,0.7);font-family:'DM Mono',monospace;
+}
+
+/* ── PHOTO BOX ── */
+.dl-photo-box{
+  position:absolute;
+  top:66px;left:22px;
+  width:114px;height:144px;
+  z-index:20;
+  border:2px solid rgba(255,255,255,0.45);
+  border-radius:4px;
+  overflow:hidden;
+  background:rgba(0,0,0,0.4);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(0,0,0,0.5);
+}
+.dl-photo-img{width:100%;height:100%;object-fit:cover;display:none;}
+.dl-photo-ph{
+  font-size:10px;color:rgba(255,255,255,0.3);
+  letter-spacing:1px;text-align:center;line-height:1.8;
+  font-family:'DM Mono',monospace;
+}
+
+/* ── GHOST SECONDARY PHOTO ── */
+.dl-ghost-photo{
+  position:absolute;
+  top:64px;right:22px;
+  width:56px;height:70px;
+  z-index:5;
+  opacity:0.18;
+  border-radius:3px;overflow:hidden;
+  border:1px solid rgba(255,255,255,0.3);
+}
+.dl-ghost-photo img{width:100%;height:100%;object-fit:cover;display:none;}
+
+/* ── MAIN DATA FIELDS ── */
+.dl-data{
+  position:absolute;
+  top:68px;left:148px;right:86px;
+  z-index:20;
+}
+
+.dl-field-group{margin-bottom:7px;}
+.dl-field-label{
+  font-size:8px;letter-spacing:2px;
+  color:rgba(255,255,255,0.65);
+  text-transform:uppercase;
+  margin-bottom:1px;
+  font-family:'DM Mono',monospace;
+  text-shadow:0 1px 4px rgba(0,0,0,0.8);
+}
+.dl-field-value{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:15px;font-weight:500;
+  color:#fff;letter-spacing:0.5px;
+  line-height:1.15;
+  text-shadow:0 1px 6px rgba(0,0,0,0.7);
+}
+.dl-field-value.xl{font-size:32px;font-weight:800;letter-spacing:0.5px;text-shadow:0 2px 8px rgba(0,0,0,0.6);}
+.dl-field-value.lg{font-size:22px;font-weight:700;text-shadow:0 1px 6px rgba(0,0,0,0.5);}
+.dl-field-value.sm{font-size:13px;}
+
+.dl-data-row{display:flex;gap:24px;flex-wrap:wrap;}
+.dl-data-col{}
+
+/* ── BOTTOM DATA STRIP ── */
+.dl-bottom{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  height:136px;
+  z-index:20;
+  padding:10px 22px 14px;
+}
+.dl-bottom-top{
+  display:flex;gap:20px;
+  margin-bottom:10px;
+  align-items:flex-end;
+}
+.dl-bottom-fields{
+  display:flex;gap:24px;flex:1;flex-wrap:wrap;align-items:flex-end;
+}
+
+/* ── SIGNATURE STRIP ── */
+.dl-sig-area{
+  border-bottom:1.5px solid rgba(255,255,255,0.35);
+  padding-bottom:3px;min-width:180px;
+}
+.dl-sig-text{
+  font-family:'Barlow Condensed',sans-serif;
+  font-style:italic;
+  font-size:20px;color:#fff;
+  text-shadow:0 1px 6px rgba(0,0,0,0.8);
+  letter-spacing:0.5px;
+}
+.dl-sig-label{
+  font-size:8px;letter-spacing:1.5px;
+  color:rgba(255,255,255,0.45);
+  text-transform:uppercase;margin-top:2px;
+  font-family:'DM Mono',monospace;
+}
+
+/* ── LICENSE NUMBER (big, right side) ── */
+.dl-licnum{
+  text-align:right;
+}
+.dl-licnum-label{
+  font-size:8px;letter-spacing:2px;
+  color:rgba(255,255,255,0.45);
+  text-transform:uppercase;font-family:'DM Mono',monospace;
+}
+.dl-licnum-value{
+  font-family:'DM Mono',monospace;
+  font-size:17px;font-weight:500;
+  color:rgba(255,255,255,0.9);letter-spacing:2px;
+  text-shadow:0 1px 8px rgba(0,0,0,0.8);
+}
+
+/* ── BOTTOM ROW (dates + restrictions) ── */
+.dl-meta-row{
+  display:flex;gap:20px;align-items:flex-end;flex-wrap:wrap;
+}
+
+/* ── DD NUMBER (tiny, very bottom) ── */
+.dl-dd{
+  position:absolute;bottom:6px;left:22px;
+  font-family:'DM Mono',monospace;
+  font-size:7.5px;color:rgba(255,255,255,0.28);
+  letter-spacing:1px;z-index:21;
+}
+
+/* ── FP MARK ── */
+.dl-fp{
+  position:absolute;bottom:6px;right:16px;
+  font-family:'DM Mono',monospace;font-size:7px;
+  color:rgba(255,255,255,0.18);letter-spacing:1.5px;
+  text-transform:uppercase;z-index:21;
+}
+
+/* ── HOLOGRAPHIC STRIP ── */
+.dl-holo{
+  position:absolute;left:0;right:0;
+  top:52px;height:3px;z-index:15;
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,200,100,0.4) 10%,
+    rgba(100,200,255,0.5) 25%,
+    rgba(200,100,255,0.4) 40%,
+    rgba(255,200,100,0.5) 55%,
+    rgba(100,255,200,0.4) 70%,
+    rgba(255,100,200,0.3) 85%,
+    transparent 100%
+  );
+}
+
+/* ── CLASS BADGE ── */
+.dl-class-badge{
+  position:absolute;
+  top:60px;right:22px;
+  width:52px;height:52px;
+  z-index:20;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;
+  backdrop-filter:blur(4px);
+  border:1.5px solid rgba(255,255,255,0.3);
+}
+.dl-class-letter{
+  font-family:'Oswald',sans-serif;
+  font-size:20px;font-weight:700;color:#fff;line-height:1;
+  text-shadow:0 1px 6px rgba(0,0,0,0.5);
+}
+.dl-class-sub{
+  font-size:7px;letter-spacing:1.5px;
+  color:rgba(255,255,255,0.6);
+  font-family:'DM Mono',monospace;text-transform:uppercase;
+}
+
+/* ══════════════════════════
+   CARD BACK
+══════════════════════════ */
+.dl-back{
+  width:760px;height:480px;
+  border-radius:16px;
+  position:relative;overflow:hidden;
+  margin-top:20px;
+  font-family:'Barlow Condensed',sans-serif;
+  box-shadow:0 30px 80px rgba(0,0,0,0.7),0 0 0 1.5px rgba(255,255,255,0.06);
+  transform:rotateX(2deg) rotateY(-1.5deg);
+  transition:transform 0.5s;
+}
+.dl-back:hover{transform:rotateX(0) rotateY(0);}
+.dl-back-bg{position:absolute;inset:0;z-index:0;}
+.dl-back-gloss{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(135deg,rgba(255,255,255,0.06) 0%,rgba(255,255,255,0) 50%,rgba(255,255,255,0.04) 100%);
+}
+.dl-back-guilloche{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  opacity:0.2;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 5px,rgba(255,255,255,0.06) 5px,rgba(255,255,255,0.06) 6px),
+    repeating-linear-gradient(90deg,transparent,transparent 5px,rgba(255,255,255,0.04) 5px,rgba(255,255,255,0.04) 6px);
+}
+
+/* Magnetic stripe */
+.dl-mag{
+  position:absolute;top:36px;left:0;right:0;
+  height:54px;z-index:10;
+  background:linear-gradient(180deg,#1a1a1a 0%,#0a0a0a 50%,#1a1a1a 100%);
+  box-shadow:0 2px 8px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+/* PDF417 barcode area */
+.dl-barcode-section{
+  position:absolute;bottom:24px;left:22px;right:22px;
+  z-index:10;
+}
+.dl-barcode-label{
+  font-size:7px;letter-spacing:2px;
+  color:rgba(255,255,255,0.3);margin-bottom:5px;
+  font-family:'DM Mono',monospace;text-transform:uppercase;
+}
+.dl-pdf417{
+  width:100%;height:60px;
+  display:flex;gap:1.5px;align-items:stretch;
+  background:transparent;
+}
+.dl-pdf417 .bar{
+  flex-shrink:0;
+  border-radius:0.5px;
+}
+
+/* Back text content */
+.dl-back-content{
+  position:absolute;
+  top:110px;left:22px;right:22px;
+  z-index:10;
+}
+.dl-back-row{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:16px;margin-bottom:12px;
+}
+.dl-back-field label{
+  font-size:7.5px;letter-spacing:1.5px;color:rgba(255,255,255,0.4);
+  text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:2px;display:block;
+}
+.dl-back-field p{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:14px;color:rgba(255,255,255,0.75);letter-spacing:0.5px;
+}
+
+.dl-back-photo{
+  position:absolute;top:110px;right:22px;
+  width:80px;height:100px;
+  z-index:10;
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:3px;overflow:hidden;
+  background:rgba(0,0,0,0.4);
+  opacity:0.7;
+}
+.dl-back-photo img{width:100%;height:100%;object-fit:cover;display:none;}
+
+.dl-back-legal{
+  position:absolute;top:108px;left:22px;right:118px;
+  z-index:10;
+  font-size:8px;color:rgba(255,255,255,0.35);
+  line-height:1.7;font-family:'DM Mono',monospace;letter-spacing:0.3px;
+}
+
+.dl-back-fp{
+  position:absolute;top:8px;right:16px;
+  font-family:'DM Mono',monospace;font-size:7px;
+  color:rgba(255,255,255,0.15);letter-spacing:1.5px;z-index:10;
+}
+
+/* ─── REGION THEMES ─────────────────────── */
+/* Each region = unique scenic SVG background + color system */
+
+/* ─── PAGE LAYOUT ─────────────────────── */
+@media(max-width:1000px){
+  .workspace{grid-template-columns:1fr;}
+  .preview-col{position:static;}
+  .dl-scene,.dl-front,.dl-back{width:100%;max-width:760px;}
+  .dl-front,.dl-back{height:auto;aspect-ratio:760/480;}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/index.html">← Form Porn</a>
+  <span class="brand">Forma Operator License</span>
+  <a href="/pricing.html">$3 Export</a>
+</div>
+
+<h1>Forma Operator License</h1>
+<p class="subtitle">United States of Forma · 12 Fictional Regions · Full Editable Fields</p>
+
+<div class="workspace">
+
+<!-- ── CONTROLS ─────────────────────── -->
+<div>
+
+  <div class="panel">
+    <div class="panel-title">Region & Card Type</div>
+    <div class="field">
+      <label>Forma Region</label>
+      <select id="f_region" onchange="applyRegion();render()">
+        <option value="nf">North Forma</option>
+        <option value="wf">West Forma</option>
+        <option value="ef">East Forma</option>
+        <option value="sf">South Forma</option>
+        <option value="gc">Forma Gold Coast</option>
+        <option value="fb">Forma Bay</option>
+        <option value="fr">Forma Ridge</option>
+        <option value="fc">Forma Capital</option>
+        <option value="fi">Forma Isle</option>
+        <option value="fp">Forma Prime</option>
+        <option value="fh">Forma Highland</option>
+        <option value="co">Forma Coast</option>
+      </select>
+    </div>
+    <div class="r2">
+      <div class="field">
+        <label>Document Type</label>
+        <select id="f_type" onchange="render()">
+          <option>DRIVER LICENSE</option>
+          <option>REAL·FORMA ID</option>
+          <option>COMMERCIAL DL</option>
+          <option>PROVISIONAL</option>
+          <option>LEARNER PERMIT</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Class</label>
+        <select id="f_class" onchange="render()">
+          <option value="A">Class A</option>
+          <option value="B">Class B</option>
+          <option value="C" selected>Class C</option>
+          <option value="M">Class M</option>
+          <option value="D">Class D</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Personal Information</div>
+    <div class="field">
+      <label>Last Name</label>
+      <input type="text" id="f_last" value="PAPESTON" oninput="render()">
+    </div>
+    <div class="r2">
+      <div class="field">
+        <label>First Name</label>
+        <input type="text" id="f_first" value="FORMA" oninput="render()">
+      </div>
+      <div class="field">
+        <label>Middle Initial</label>
+        <input type="text" id="f_mid" value="L" maxlength="3" oninput="render()">
+      </div>
+    </div>
+    <div class="field">
+      <label>Address Line 1</label>
+      <input type="text" id="f_addr1" value="9720 WILSHIRE BLVD STE 400" oninput="render()">
+    </div>
+    <div class="field">
+      <label>City, Region, ZIP</label>
+      <input type="text" id="f_addr2" value="BEVERLY HILLS, NF 90212" oninput="render()">
+    </div>
+    <div class="r3">
+      <div class="field">
+        <label>DOB</label>
+        <input type="text" id="f_dob" value="03/15/1990" oninput="render()">
+      </div>
+      <div class="field">
+        <label>Issue Date</label>
+        <input type="text" id="f_iss" value="01/10/2022" oninput="render()">
+      </div>
+      <div class="field">
+        <label>Expiry</label>
+        <input type="text" id="f_exp" value="03/15/2028" oninput="render()">
+      </div>
+    </div>
+    <div class="r3">
+      <div class="field">
+        <label>Sex</label>
+        <select id="f_sex" onchange="render()">
+          <option>F</option><option>M</option><option>X</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Height</label>
+        <input type="text" id="f_ht" value="5-07" oninput="render()">
+      </div>
+      <div class="field">
+        <label>Weight (lb)</label>
+        <input type="text" id="f_wt" value="128" oninput="render()">
+      </div>
+    </div>
+    <div class="r2">
+      <div class="field">
+        <label>Eyes</label>
+        <select id="f_eyes" onchange="render()">
+          <option>BRN</option><option>BLU</option><option>GRN</option>
+          <option>HAZ</option><option>GRY</option><option>BLK</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Hair</label>
+        <select id="f_hair" onchange="render()">
+          <option>BRN</option><option>BLK</option><option>BLD</option>
+          <option>RED</option><option>GRY</option><option>WHI</option>
+        </select>
+      </div>
+    </div>
+    <div class="r2">
+      <div class="field">
+        <label>License Number</label>
+        <input type="text" id="f_lnum" value="FP9720881A" oninput="render()">
+      </div>
+      <div class="field">
+        <label>Restrictions</label>
+        <input type="text" id="f_rest" value="NONE" oninput="render()">
+      </div>
+    </div>
+    <div class="field">
+      <label>Organ Donor</label>
+      <select id="f_donor" onchange="render()">
+        <option value="yes">Yes — Donor</option>
+        <option value="no">No</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Signature (type it)</label>
+      <input type="text" id="f_sig" value="Forma L Papeston" oninput="render()">
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Photo Upload</div>
+    <div class="photo-drop" onclick="document.getElementById('photoFile').click()">
+      <input type="file" id="photoFile" accept="image/*" onchange="loadPhoto(event)">
+      <img id="photoThumb" class="photo-thumb-preview">
+      <p id="photoLabel">📷 Click to upload photo<br><span style="font-size:8px;opacity:0.5;">Passport-style recommended</span></p>
+    </div>
+    <button class="btn-gold" onclick="exportFront()">⬇ Export Front — $3</button>
+    <button class="btn-gold" style="margin-top:6px;background:linear-gradient(135deg,#3a3a5a,#5a5a8a);color:#ddd;" onclick="exportBack()">⬇ Export Back — $3</button>
+    <button class="btn-outline" onclick="window.print()">🖨 Print</button>
+    <div class="note">⚠ "United States of Forma" is a fictional jurisdiction. Form Porn entertainment use only. Not a real government document.</div>
+  </div>
+
+</div>
+
+<!-- ── PREVIEW ─────────────────────── -->
+<div class="preview-col">
+  <p class="preview-label">Front</p>
+  <div class="dl-scene">
+    <div class="dl-front" id="dl-front">
+
+      <!-- Background SVG (scenic) -->
+      <div class="dl-bg" id="dl-bg-front"></div>
+
+      <!-- Gloss -->
+      <div class="dl-gloss"></div>
+
+      <!-- Guilloche -->
+      <div class="dl-guilloche"></div>
+
+      <!-- Data area darkening strip -->
+      <div class="dl-data-strip"></div>
+
+      <!-- Dark text mask -->
+      <div class="dl-textmask"></div>
+
+      <!-- Holographic strip -->
+      <div class="dl-holo"></div>
+
+      <!-- Header -->
+      <div class="dl-header">
+        <div class="dl-header-bg"></div>
+        <div class="dl-state-name" id="d_statename">NORTH FORMA</div>
+        <div class="dl-header-right">
+          <div class="dl-doc-type" id="d_type">DRIVER LICENSE</div>
+          <div class="dl-realid">
+            <div class="dl-star"></div>
+            <span class="dl-realid-text">REAL·FORMA</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Photo -->
+      <div class="dl-photo-box">
+        <div class="dl-photo-ph" id="photoPlaceholder">PHOTO</div>
+        <img id="dl-photo" class="dl-photo-img">
+      </div>
+
+      <!-- Ghost photo (right side) -->
+      <div class="dl-ghost-photo">
+        <img id="dl-ghost-img">
+      </div>
+
+      <!-- Class badge -->
+      <div class="dl-class-badge" id="dl-class-badge">
+        <div class="dl-class-letter" id="d_class">C</div>
+        <div class="dl-class-sub">CLASS</div>
+      </div>
+
+      <!-- Main data fields -->
+      <div class="dl-data">
+        <div class="dl-field-group">
+          <div class="dl-field-label">Last Name</div>
+          <div class="dl-field-value xl" id="d_last">PAPESTON</div>
+        </div>
+        <div class="dl-field-group">
+          <div class="dl-field-label">First &amp; Middle Name</div>
+          <div class="dl-field-value lg" id="d_firstname">FORMA L</div>
+        </div>
+        <div class="dl-field-group">
+          <div class="dl-field-label">Address</div>
+          <div class="dl-field-value sm" id="d_addr1">9720 WILSHIRE BLVD STE 400</div>
+          <div class="dl-field-value sm" id="d_addr2">BEVERLY HILLS, NF 90212</div>
+        </div>
+      </div>
+
+      <!-- Bottom strip -->
+      <div class="dl-bottom">
+        <div class="dl-bottom-top">
+          <div class="dl-bottom-fields">
+            <div class="dl-data-col">
+              <div class="dl-field-label">DOB</div>
+              <div class="dl-field-value sm" id="d_dob">03/15/1990</div>
+            </div>
+            <div class="dl-data-col">
+              <div class="dl-field-label">ISS</div>
+              <div class="dl-field-value sm" id="d_iss">01/10/2022</div>
+            </div>
+            <div class="dl-data-col">
+              <div class="dl-field-label">EXP</div>
+              <div class="dl-field-value sm" id="d_exp" style="color:#f87;font-weight:700;">03/15/2028</div>
+            </div>
+            <div class="dl-data-col">
+              <div class="dl-field-label">SEX</div>
+              <div class="dl-field-value sm" id="d_sex">F</div>
+            </div>
+            <div class="dl-data-col">
+              <div class="dl-field-label">HT</div>
+              <div class="dl-field-value sm" id="d_ht">5-07</div>
+            </div>
+            <div class="dl-data-col">
+              <div class="dl-field-label">WT</div>
+              <div class="dl-field-value sm" id="d_wt">128</div>
+            </div>
+            <div class="dl-data-col">
+              <div class="dl-field-label">EYES</div>
+              <div class="dl-field-value sm" id="d_eyes">BRN</div>
+            </div>
+            <div class="dl-data-col">
+              <div class="dl-field-label">HAIR</div>
+              <div class="dl-field-value sm" id="d_hair">BRN</div>
+            </div>
+            <div class="dl-data-col">
+              <div class="dl-field-label">REST</div>
+              <div class="dl-field-value sm" id="d_rest">NONE</div>
+            </div>
+            <div class="dl-data-col" id="donor-block">
+              <div class="dl-field-label">DONOR</div>
+              <div class="dl-field-value sm" style="color:#f87;">♥ DONOR</div>
+            </div>
+          </div>
+          <div class="dl-licnum">
+            <div class="dl-licnum-label">License No.</div>
+            <div class="dl-licnum-value" id="d_lnum">FP9720881A</div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+          <div>
+            <div class="dl-sig-area">
+              <div class="dl-sig-text" id="d_sig">Forma L Papeston</div>
+            </div>
+            <div class="dl-sig-label">CARDHOLDER SIGNATURE</div>
+          </div>
+          <!-- Small 1D barcode hint -->
+          <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+            <div id="dl-1d-barcode" style="display:flex;gap:1px;height:28px;align-items:flex-end;"></div>
+            <div style="font-family:'DM Mono',monospace;font-size:6px;color:rgba(255,255,255,0.3);letter-spacing:0.5px;" id="d_barcode1d">FP · NF · 9720881</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DD number -->
+      <div class="dl-dd" id="d_dd">DD 0000000000000000000</div>
+
+      <!-- FP watermark -->
+      <div class="dl-fp">FORM PORN © · ENTERTAINMENT USE ONLY</div>
+
+    </div><!-- end dl-front -->
+
+    <!-- ── BACK ── -->
+    <p class="preview-label" style="margin-top:20px;">Back</p>
+    <div class="dl-back" id="dl-back">
+      <div class="dl-back-bg" id="dl-bg-back"></div>
+      <div class="dl-back-gloss"></div>
+      <div class="dl-back-guilloche"></div>
+
+      <!-- Mag stripe -->
+      <div class="dl-mag"></div>
+
+      <!-- Ghost photo on back -->
+      <div class="dl-back-photo">
+        <img id="dl-back-photo-img">
+      </div>
+
+      <!-- Legal text -->
+      <div class="dl-back-legal" id="dl-back-legal">
+        This credential is the property of the Department of Motor Vehicles, United States of Forma.
+        Unauthorized reproduction, alteration, or use of this document is a violation of URF Code §47.2
+        and is punishable under Forma Law. If found, return to nearest DMV office or mail to the address
+        on the reverse side. This document is for entertainment and creative purposes only (Form Porn LLC).
+        All information is fictional. Not a valid government-issued identification document.
+      </div>
+
+      <!-- Back content -->
+      <div class="dl-back-content" style="top:230px;">
+        <div class="dl-back-row">
+          <div class="dl-back-field">
+            <label>Full Name</label>
+            <p id="db_name">PAPESTON, FORMA L</p>
+          </div>
+          <div class="dl-back-field">
+            <label>License Number</label>
+            <p id="db_lnum">FP9720881A</p>
+          </div>
+        </div>
+        <div class="dl-back-row">
+          <div class="dl-back-field">
+            <label>Address</label>
+            <p id="db_addr">9720 WILSHIRE BLVD STE 400, BEVERLY HILLS NF 90212</p>
+          </div>
+          <div class="dl-back-field">
+            <label>Restrictions / Endorsements</label>
+            <p id="db_rest">NONE</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PDF417 barcode -->
+      <div class="dl-barcode-section">
+        <div class="dl-barcode-label">PDF417 · Machine Readable Zone</div>
+        <div class="dl-pdf417" id="dl-pdf417"></div>
+      </div>
+
+      <div class="dl-back-fp">FORM PORN © FP · ENTERTAINMENT USE ONLY · USF-DMV</div>
+    </div>
+
+  </div><!-- end dl-scene -->
+</div><!-- end preview-col -->
+</div><!-- end workspace -->
+
+<script>
+// ── REGION DEFINITIONS ──────────────────────────────────────
+const REGIONS = {
+  nf:{
+    name:'NORTH FORMA', abbr:'NF',
+    // Mountainous — cool blues, snow peaks
+    frontBg:`
+      <svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+        <defs>
+          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1a3a6a"/>
+            <stop offset="60%" stop-color="#2a5a9a"/>
+            <stop offset="100%" stop-color="#4a7aaa"/>
+          </linearGradient>
+          <linearGradient id="mtn1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#d8e8f0"/>
+            <stop offset="40%" stop-color="#8ab0c8"/>
+            <stop offset="100%" stop-color="#3a5a78"/>
+          </linearGradient>
+          <linearGradient id="mtn2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e8f0f8"/>
+            <stop offset="50%" stop-color="#5a7890"/>
+            <stop offset="100%" stop-color="#2a4060"/>
+          </linearGradient>
+        </defs>
+        <!-- Sky -->
+        <rect width="760" height="480" fill="url(#sky)"/>
+        <!-- Stars -->
+        <circle cx="100" cy="60" r="1" fill="white" opacity="0.6"/>
+        <circle cx="200" cy="40" r="1.2" fill="white" opacity="0.5"/>
+        <circle cx="320" cy="80" r="0.8" fill="white" opacity="0.7"/>
+        <circle cx="500" cy="50" r="1" fill="white" opacity="0.5"/>
+        <circle cx="650" cy="70" r="1.5" fill="white" opacity="0.6"/>
+        <circle cx="720" cy="35" r="0.9" fill="white" opacity="0.4"/>
+        <!-- Far mountains (light, distance) -->
+        <polygon points="0,300 80,180 160,220 240,160 320,200 400,140 480,190 560,155 640,185 720,150 760,170 760,320 0,320" fill="#2a4a6a" opacity="0.7"/>
+        <!-- Mid mountains (snow caps) -->
+        <polygon points="-20,340 60,200 100,240 160,170 220,210 280,155 360,215 440,155 500,200 580,145 640,195 700,160 780,200 780,360 -20,360" fill="url(#mtn1)"/>
+        <!-- Snow caps -->
+        <polygon points="60,200 80,190 100,200 80,215" fill="white" opacity="0.9"/>
+        <polygon points="160,170 185,160 210,175 185,190" fill="white" opacity="0.85"/>
+        <polygon points="280,155 310,142 340,158 310,172" fill="white" opacity="0.9"/>
+        <polygon points="440,155 465,143 490,158 465,170" fill="white" opacity="0.85"/>
+        <polygon points="580,145 605,133 630,148 605,162" fill="white" opacity="0.9"/>
+        <!-- Foreground hills -->
+        <ellipse cx="200" cy="420" rx="300" ry="120" fill="#1a3050" opacity="0.8"/>
+        <ellipse cx="600" cy="450" rx="280" ry="100" fill="#162840" opacity="0.9"/>
+        <!-- Pine trees suggestion -->
+        <rect x="0" y="330" width="760" height="150" fill="#0e1e34"/>
+        <!-- Tree silhouettes -->
+        <polygon points="40,330 50,290 60,330" fill="#0a1828"/>
+        <polygon points="55,330 67,280 79,330" fill="#0a1828"/>
+        <polygon points="80,330 92,295 104,330" fill="#081420"/>
+        <polygon points="660,330 672,285 684,330" fill="#0a1828"/>
+        <polygon points="690,330 704,278 718,330" fill="#081420"/>
+        <polygon points="725,330 737,292 749,330" fill="#0a1828"/>
+        <!-- Aurora hint -->
+        <ellipse cx="380" cy="120" rx="300" ry="60" fill="#00ffa0" opacity="0.04"/>
+        <ellipse cx="500" cy="100" rx="200" ry="40" fill="#00aaff" opacity="0.05"/>
+      </svg>`,
+    backBg:'linear-gradient(145deg,#0e1e34 0%,#162840 40%,#0e1828 100%)',
+    accentColor:'rgba(100,180,255,0.8)',
+    badgeBg:'rgba(10,40,80,0.7)',
+    expColor:'#8af',
+  },
+  wf:{
+    name:'WEST FORMA', abbr:'WF',
+    frontBg:`
+      <svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+        <defs>
+          <linearGradient id="desert-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#c0501a"/>
+            <stop offset="40%" stop-color="#e07030"/>
+            <stop offset="70%" stop-color="#f0a060"/>
+            <stop offset="100%" stop-color="#e88040"/>
+          </linearGradient>
+        </defs>
+        <!-- Sunset sky -->
+        <rect width="760" height="480" fill="url(#desert-sky)"/>
+        <!-- Sun glow -->
+        <ellipse cx="380" cy="250" rx="400" ry="180" fill="#ff8820" opacity="0.3"/>
+        <ellipse cx="380" cy="280" rx="200" ry="100" fill="#ffcc44" opacity="0.2"/>
+        <!-- Mesa plateaus -->
+        <rect x="0" y="260" width="200" height="220" fill="#8a3010" rx="4"/>
+        <rect x="190" y="290" width="160" height="190" fill="#7a2808" rx="2"/>
+        <rect x="420" y="255" width="180" height="225" fill="#903218" rx="4"/>
+        <rect x="580" y="275" width="180" height="205" fill="#7a2810" rx="2"/>
+        <!-- Mesas top texture -->
+        <rect x="0" y="258" width="200" height="6" fill="#c05028" rx="2"/>
+        <rect x="420" y="253" width="180" height="6" fill="#c05028" rx="2"/>
+        <!-- Desert floor -->
+        <rect x="0" y="370" width="760" height="110" fill="#6a2010"/>
+        <!-- Saguaro cacti -->
+        <rect x="310" y="290" width="8" height="100" fill="#2a5a18" rx="3"/>
+        <rect x="295" y="320" width="30" height="6" fill="#2a5a18" rx="3"/>
+        <rect x="295" y="320" width="6" height="30" fill="#2a5a18" rx="3" transform="rotate(-10,295,320)"/>
+        <rect x="318" y="308" width="6" height="30" fill="#2a5a18" rx="3" transform="rotate(12,318,308)"/>
+        <rect x="620" y="280" width="7" height="90" fill="#2a5a18" rx="3"/>
+        <rect x="606" y="305" width="28" height="5" fill="#2a5a18" rx="3"/>
+        <rect x="606" y="305" width="5" height="28" fill="#2a5a18" rx="3"/>
+        <!-- Stars -->
+        <circle cx="80" cy="40" r="1" fill="white" opacity="0.7"/>
+        <circle cx="200" cy="60" r="1.2" fill="white" opacity="0.5"/>
+        <circle cx="500" cy="30" r="0.8" fill="white" opacity="0.8"/>
+        <circle cx="680" cy="55" r="1" fill="white" opacity="0.6"/>
+      </svg>`,
+    backBg:'linear-gradient(145deg,#3a1408 0%,#5a2010 40%,#3a1008 100%)',
+    accentColor:'rgba(255,160,80,0.9)',
+    badgeBg:'rgba(100,30,10,0.7)',
+    expColor:'#fa8',
+  },
+  ef:{
+    name:'EAST FORMA', abbr:'EF',
+    frontBg:`
+      <svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+        <defs>
+          <linearGradient id="esky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1a3020"/>
+            <stop offset="50%" stop-color="#2a5030"/>
+            <stop offset="100%" stop-color="#3a6040"/>
+          </linearGradient>
+        </defs>
+        <rect width="760" height="480" fill="url(#esky)"/>
+        <!-- Rolling forest hills -->
+        <ellipse cx="150" cy="380" rx="250" ry="140" fill="#1a4020"/>
+        <ellipse cx="400" cy="360" rx="300" ry="150" fill="#224828"/>
+        <ellipse cx="650" cy="390" rx="260" ry="130" fill="#1a4020"/>
+        <!-- Mid hills -->
+        <ellipse cx="80" cy="320" rx="180" ry="100" fill="#285030"/>
+        <ellipse cx="300" cy="300" rx="220" ry="110" fill="#305838"/>
+        <ellipse cx="550" cy="310" rx="200" ry="105" fill="#285030"/>
+        <ellipse cx="720" cy="330" rx="160" ry="90" fill="#1e4828"/>
+        <!-- Tree line -->
+        <rect x="0" y="290" width="760" height="200" fill="#162818" opacity="0.6"/>
+        <!-- Tree silhouettes - deciduous suggestion -->
+        <ellipse cx="100" cy="285" rx="28" ry="35" fill="#0e2010"/>
+        <ellipse cx="170" cy="275" rx="24" ry="30" fill="#0c1e0e"/>
+        <ellipse cx="240" cy="280" rx="26" ry="32" fill="#0e2010"/>
+        <ellipse cx="520" cy="278" rx="25" ry="31" fill="#0e2010"/>
+        <ellipse cx="590" cy="270" rx="22" ry="28" fill="#0c1e0e"/>
+        <ellipse cx="660" cy="280" rx="27" ry="33" fill="#0e2010"/>
+        <!-- Mist layers -->
+        <ellipse cx="380" cy="320" rx="400" ry="40" fill="white" opacity="0.05"/>
+        <ellipse cx="200" cy="350" rx="300" ry="30" fill="white" opacity="0.04"/>
+        <!-- Fireflies dots -->
+        <circle cx="350" cy="300" r="1.5" fill="#aaff44" opacity="0.5"/>
+        <circle cx="420" cy="310" r="1" fill="#aaff44" opacity="0.4"/>
+        <circle cx="280" cy="295" r="1.2" fill="#aaff44" opacity="0.45"/>
+        <!-- Night sky top -->
+        <rect x="0" y="0" width="760" height="80" fill="#0a1810" opacity="0.5"/>
+        <circle cx="300" cy="35" r="1" fill="white" opacity="0.6"/>
+        <circle cx="500" cy="25" r="1.2" fill="white" opacity="0.5"/>
+        <circle cx="650" cy="45" r="0.8" fill="white" opacity="0.7"/>
+      </svg>`,
+    backBg:'linear-gradient(145deg,#0a1810 0%,#162818 40%,#0a1610 100%)',
+    accentColor:'rgba(100,220,120,0.8)',
+    badgeBg:'rgba(10,40,20,0.7)',
+    expColor:'#8f8',
+  },
+  sf:{
+    name:'SOUTH FORMA', abbr:'SF',
+    frontBg:`
+      <svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+        <defs>
+          <linearGradient id="bayousky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1a0a2a"/>
+            <stop offset="40%" stop-color="#2a1040"/>
+            <stop offset="100%" stop-color="#1a1030"/>
+          </linearGradient>
+          <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1a2040"/>
+            <stop offset="100%" stop-color="#0a1020"/>
+          </linearGradient>
+        </defs>
+        <rect width="760" height="480" fill="url(#bayousky)"/>
+        <!-- Moon reflection -->
+        <circle cx="580" cy="80" r="30" fill="#f0e8d0" opacity="0.85"/>
+        <ellipse cx="580" cy="280" rx="30" ry="90" fill="#f0e8d0" opacity="0.08"/>
+        <!-- Water -->
+        <rect x="0" y="300" width="760" height="180" fill="url(#water)"/>
+        <!-- Water ripples -->
+        <ellipse cx="380" cy="340" rx="300" ry="8" fill="white" opacity="0.04"/>
+        <ellipse cx="380" cy="360" rx="250" ry="6" fill="white" opacity="0.03"/>
+        <!-- Cypress tree silhouettes -->
+        <rect x="80" y="180" width="10" height="160" fill="#0a0818"/>
+        <ellipse cx="85" cy="195" rx="15" ry="40" fill="#100a20"/>
+        <rect x="90" y="220" width="30" height="4" fill="#0a0818" rx="2" transform="rotate(20,90,220)"/>
+        <rect x="70" y="230" width="25" height="4" fill="#0a0818" rx="2" transform="rotate(-15,70,230)"/>
+        <rect x="200" y="200" width="8" height="140" fill="#0a0818"/>
+        <ellipse cx="204" cy="210" rx="12" ry="35" fill="#100a20"/>
+        <rect x="660" y="190" width="10" height="150" fill="#0a0818"/>
+        <ellipse cx="665" cy="200" rx="14" ry="38" fill="#100a20"/>
+        <!-- Spanish moss hint -->
+        <path d="M 80 210 Q 70 240 60 260" stroke="#181028" fill="none" stroke-width="3" opacity="0.7"/>
+        <path d="M 85 215 Q 100 245 110 270" stroke="#181028" fill="none" stroke-width="2.5" opacity="0.7"/>
+        <!-- Stars & fireflies -->
+        <circle cx="200" cy="50" r="1.2" fill="white" opacity="0.7"/>
+        <circle cx="350" cy="30" r="0.9" fill="white" opacity="0.6"/>
+        <circle cx="450" cy="60" r="1.1" fill="white" opacity="0.5"/>
+        <circle cx="700" cy="40" r="1" fill="white" opacity="0.7"/>
+        <!-- Jazz glow -->
+        <ellipse cx="200" cy="300" rx="100" ry="40" fill="#ff8800" opacity="0.04"/>
+      </svg>`,
+    backBg:'linear-gradient(145deg,#1a0a2a 0%,#2a1040 40%,#1a0820 100%)',
+    accentColor:'rgba(200,150,255,0.85)',
+    badgeBg:'rgba(40,10,80,0.7)',
+    expColor:'#d8a',
+  },
+  gc:{
+    name:'FORMA GOLD COAST', abbr:'GC',
+    frontBg:`
+      <svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+        <defs>
+          <linearGradient id="gcsky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0a1830"/>
+            <stop offset="50%" stop-color="#1a3060"/>
+            <stop offset="100%" stop-color="#1a4080"/>
+          </linearGradient>
+          <linearGradient id="gcocean" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1a4060"/>
+            <stop offset="100%" stop-color="#0a2040"/>
+          </linearGradient>
+        </defs>
+        <rect width="760" height="480" fill="url(#gcsky)"/>
+        <!-- City skyline silhouette -->
+        <!-- Buildings -->
+        <rect x="20" y="240" width="40" height="200" fill="#0a1428"/>
+        <rect x="30" y="220" width="20" height="30" fill="#0a1428"/>
+        <rect x="70" y="260" width="50" height="180" fill="#0c1830"/>
+        <rect x="85" y="240" width="20" height="30" fill="#0c1830"/>
+        <rect x="130" y="230" width="60" height="210" fill="#0a1428"/>
+        <rect x="200" y="250" width="45" height="190" fill="#0c1830"/>
+        <rect x="260" y="200" width="55" height="240" fill="#0e1c34"/>
+        <rect x="278" y="185" width="18" height="20" fill="#0e1c34"/>
+        <rect x="325" y="220" width="50" height="220" fill="#0c1830"/>
+        <rect x="385" y="195" width="60" height="245" fill="#0a1428"/>
+        <rect x="395" y="178" width="40" height="22" fill="#0a1428"/>
+        <rect x="410" y="168" width="8" height="14" fill="#0a1428"/>
+        <rect x="455" y="230" width="45" height="210" fill="#0e1c34"/>
+        <rect x="510" y="215" width="55" height="225" fill="#0c1830"/>
+        <rect x="575" y="240" width="50" height="200" fill="#0a1428"/>
+        <rect x="635" y="250" width="45" height="190" fill="#0c1830"/>
+        <rect x="690" y="235" width="70" height="205" fill="#0e1c34"/>
+        <!-- Building windows (tiny lights) -->
+        <rect x="35" y="250" width="3" height="3" fill="#c9a84c" opacity="0.6"/>
+        <rect x="42" y="258" width="3" height="3" fill="#c9a84c" opacity="0.5"/>
+        <rect x="35" y="268" width="3" height="3" fill="white" opacity="0.4"/>
+        <rect x="140" y="240" width="3" height="3" fill="#c9a84c" opacity="0.5"/>
+        <rect x="148" y="255" width="3" height="3" fill="white" opacity="0.4"/>
+        <rect x="275" y="210" width="3" height="3" fill="#c9a84c" opacity="0.6"/>
+        <rect x="395" y="205" width="3" height="3" fill="#c9a84c" opacity="0.5"/>
+        <rect x="403" y="215" width="3" height="3" fill="white" opacity="0.4"/>
+        <rect x="520" y="225" width="3" height="3" fill="#c9a84c" opacity="0.6"/>
+        <rect x="528" y="238" width="3" height="3" fill="white" opacity="0.4"/>
+        <rect x="640" y="260" width="3" height="3" fill="#c9a84c" opacity="0.5"/>
+        <rect x="700" y="248" width="3" height="3" fill="#c9a84c" opacity="0.6"/>
+        <!-- Water / harbor -->
+        <rect x="0" y="380" width="760" height="100" fill="url(#gcocean)"/>
+        <!-- City reflection in water -->
+        <rect x="0" y="380" width="760" height="100" fill="#0a2040" opacity="0.7"/>
+        <ellipse cx="380" cy="400" rx="400" ry="20" fill="#c9a84c" opacity="0.04"/>
+        <!-- Moon + reflection -->
+        <circle cx="680" cy="70" r="25" fill="#f0e8d0" opacity="0.8"/>
+        <ellipse cx="680" cy="410" rx="20" ry="60" fill="#f0e8d0" opacity="0.06"/>
+        <!-- Stars -->
+        <circle cx="100" cy="50" r="1" fill="white" opacity="0.6"/>
+        <circle cx="250" cy="35" r="1.2" fill="white" opacity="0.5"/>
+        <circle cx="450" cy="55" r="0.8" fill="white" opacity="0.7"/>
+        <circle cx="560" cy="30" r="1" fill="white" opacity="0.5"/>
+      </svg>`,
+    backBg:'linear-gradient(145deg,#0a1428 0%,#0e1c38 40%,#0a1428 100%)',
+    accentColor:'rgba(200,170,80,0.9)',
+    badgeBg:'rgba(20,30,70,0.7)',
+    expColor:'#fc8',
+  },
+  fb:{
+    name:'FORMA BAY', abbr:'FB',
+    frontBg:`
+      <svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+        <defs>
+          <linearGradient id="baysky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0a1828"/>
+            <stop offset="60%" stop-color="#1a3858"/>
+            <stop offset="100%" stop-color="#2a5878"/>
+          </linearGradient>
+        </defs>
+        <rect width="760" height="480" fill="url(#baysky)"/>
+        <!-- Bridge structure (inspired by famous bay bridges) -->
+        <!-- Main cables from towers -->
+        <line x1="200" y1="100" x2="0" y2="320" stroke="#c9a84c" stroke-width="3" opacity="0.6"/>
+        <line x1="200" y1="100" x2="400" y2="280" stroke="#c9a84c" stroke-width="3" opacity="0.6"/>
+        <!-- Tower left -->
+        <rect x="188" y="80" width="24" height="220" fill="#8a7050" rx="2"/>
+        <rect x="182" y="120" width="36" height="8" fill="#7a6040" rx="1"/>
+        <rect x="182" y="150" width="36" height="6" fill="#7a6040" rx="1"/>
+        <rect x="194" y="80" width="12" height="30" fill="#6a5030"/>
+        <!-- Suspender cables -->
+        <line x1="160" y1="160" x2="140" y2="260" stroke="#c9a84c" stroke-width="1" opacity="0.4"/>
+        <line x1="175" y1="140" x2="160" y2="260" stroke="#c9a84c" stroke-width="1" opacity="0.4"/>
+        <line x1="220" y1="140" x2="240" y2="260" stroke="#c9a84c" stroke-width="1" opacity="0.4"/>
+        <line x1="235" y1="158" x2="260" y2="260" stroke="#c9a84c" stroke-width="1" opacity="0.4"/>
+        <!-- Bridge deck -->
+        <rect x="0" y="258" width="400" height="14" fill="#5a4a38" rx="2"/>
+        <rect x="0" y="268" width="400" height="5" fill="#4a3a2a"/>
+        <!-- Tower right (partial) -->
+        <rect x="548" y="110" width="22" height="190" fill="#8a7050" rx="2" opacity="0.6"/>
+        <line x1="559" y1="110" x2="760" y2="280" stroke="#c9a84c" stroke-width="2.5" opacity="0.5"/>
+        <line x1="559" y1="110" x2="400" y2="260" stroke="#c9a84c" stroke-width="2.5" opacity="0.5"/>
+        <rect x="400" y="256" width="360" height="14" fill="#5a4a38" rx="2" opacity="0.7"/>
+        <!-- Bay water -->
+        <rect x="0" y="320" width="760" height="160" fill="#0a2040"/>
+        <!-- Water shimmer -->
+        <ellipse cx="380" cy="350" rx="350" ry="15" fill="#1a4060" opacity="0.5"/>
+        <ellipse cx="200" cy="380" rx="200" ry="10" fill="#c9a84c" opacity="0.04"/>
+        <!-- Fog layer -->
+        <rect x="0" y="290" width="760" height="50" fill="white" opacity="0.04"/>
+        <!-- Sailboats -->
+        <polygon points="350,300 355,270 360,300" fill="white" opacity="0.4"/>
+        <line x1="355" y1="270" x2="355" y2="310" stroke="white" stroke-width="1.5" opacity="0.5"/>
+        <!-- Stars -->
+        <circle cx="80" cy="40" r="1" fill="white" opacity="0.6"/>
+        <circle cx="300" cy="30" r="1.2" fill="white" opacity="0.5"/>
+        <circle cx="680" cy="55" r="0.8" fill="white" opacity="0.7"/>
+      </svg>`,
+    backBg:'linear-gradient(145deg,#0a1828 0%,#142438 40%,#0a1828 100%)',
+    accentColor:'rgba(80,180,255,0.85)',
+    badgeBg:'rgba(10,30,60,0.7)',
+    expColor:'#8cf',
+  },
+  fr:{
+    name:'FORMA RIDGE', abbr:'FR',
+    frontBg:`
+      <svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+        <defs>
+          <linearGradient id="ridgesky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1a0a30"/>
+            <stop offset="40%" stop-color="#2a1050"/>
+            <stop offset="100%" stop-color="#3a2060"/>
+          </linearGradient>
+        </defs>
+        <rect width="760" height="480" fill="url(#ridgesky)"/>
+        <!-- Canyon ridges -->
+        <polygon points="0,480 0,200 100,280 200,200 300,270 400,190 500,260 600,195 700,255 760,210 760,480" fill="#3a1808" opacity="0.9"/>
+        <polygon points="0,480 0,240 80,310 180,235 280,300 380,225 480,295 580,230 680,285 760,245 760,480" fill="#4a2010" opacity="0.9"/>
+        <polygon points="0,480 0,290 60,340 140,280 220,340 320,270 420,340 520,275 620,340 720,285 760,310 760,480" fill="#5a2818" opacity="0.8"/>
+        <!-- Rock striations -->
+        <path d="M 0 350 Q 200 340 400 355 Q 600 365 760 348" stroke="#6a3020" fill="none" stroke-width="2" opacity="0.5"/>
+        <path d="M 0 370 Q 180 360 380 372 Q 580 380 760 366" stroke="#6a3020" fill="none" stroke-width="1.5" opacity="0.4"/>
+        <!-- Purple haze atmosphere -->
+        <ellipse cx="380" cy="300" rx="400" ry="100" fill="#6030a0" opacity="0.06"/>
+        <!-- Milky way -->
+        <ellipse cx="380" cy="80" rx="380" ry="50" fill="white" opacity="0.03"/>
+        <!-- Stars -->
+        <circle cx="60" cy="50" r="1.2" fill="white" opacity="0.8"/>
+        <circle cx="150" cy="35" r="0.8" fill="white" opacity="0.7"/>
+        <circle cx="280" cy="60" r="1" fill="white" opacity="0.6"/>
+        <circle cx="400" cy="25" r="1.5" fill="white" opacity="0.7"/>
+        <circle cx="550" cy="45" r="1.1" fill="white" opacity="0.6"/>
+        <circle cx="680" cy="30" r="0.9" fill="white" opacity="0.8"/>
+        <circle cx="720" cy="65" r="1.2" fill="white" opacity="0.5"/>
+        <!-- Milky way dots -->
+        <circle cx="200" cy="80" r="0.5" fill="white" opacity="0.4"/>
+        <circle cx="230" cy="72" r="0.4" fill="white" opacity="0.3"/>
+        <circle cx="260" cy="85" r="0.6" fill="white" opacity="0.4"/>
+        <circle cx="300" cy="78" r="0.4" fill="white" opacity="0.35"/>
+        <circle cx="340" cy="68" r="0.5" fill="white" opacity="0.3"/>
+      </svg>`,
+    backBg:'linear-gradient(145deg,#1a0a30 0%,#2a1050 40%,#1a0828 100%)',
+    accentColor:'rgba(180,120,255,0.85)',
+    badgeBg:'rgba(40,10,80,0.7)',
+    expColor:'#c8f',
+  },
+  fc:{
+    name:'FORMA CAPITAL', abbr:'FC',
+    frontBg:`
+      <svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+        <defs>
+          <linearGradient id="capsky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#060810"/>
+            <stop offset="60%" stop-color="#0e1428"/>
+            <stop offset="100%" stop-color="#161e38"/>
+          </linearGradient>
+        </defs>
+        <rect width="760" height="480" fill="url(#capsky)"/>
+        <!-- Classical government building / Capitol dome -->
+        <!-- Dome -->
+        <ellipse cx="380" cy="220" rx="80" ry="60" fill="#181e30"/>
+        <ellipse cx="380" cy="235" rx="75" ry="50" fill="#1e2438"/>
+        <rect x="300" y="265" width="160" height="160" fill="#1a2030"/>
+        <!-- Columns -->
+        <rect x="310" y="265" width="8" height="80" fill="#0e1428"/>
+        <rect x="330" y="265" width="8" height="80" fill="#0e1428"/>
+        <rect x="350" y="265" width="8" height="80" fill="#0e1428"/>
+        <rect x="370" y="265" width="8" height="80" fill="#0e1428"/>
+        <rect x="390" y="265" width="8" height="80" fill="#0e1428"/>
+        <rect x="410" y="265" width="8" height="80" fill="#0e1428"/>
+        <rect x="430" y="265" width="8" height="80" fill="#0e1428"/>
+        <rect x="450" y="265" width="8" height="80" fill="#0e1428"/>
+        <!-- Steps -->
+        <rect x="280" y="345" width="200" height="10" fill="#141c2e"/>
+        <rect x="270" y="355" width="220" height="8" fill="#101828"/>
+        <rect x="260" y="363" width="240" height="7" fill="#0e1628"/>
+        <!-- Dome lantern -->
+        <rect x="372" y="162" width="16" height="30" fill="#1e2840"/>
+        <ellipse cx="380" cy="162" rx="12" ry="8" fill="#242e48"/>
+        <!-- Light in dome -->
+        <ellipse cx="380" cy="220" rx="30" ry="20" fill="#c9a84c" opacity="0.04"/>
+        <!-- Side wings -->
+        <rect x="100" y="295" width="200" height="130" fill="#141c2e"/>
+        <rect x="460" y="295" width="200" height="130" fill="#141c2e"/>
+        <rect x="80" y="295" width="30" height="10" fill="#0e1428"/>
+        <rect x="650" y="295" width="30" height="10" fill="#0e1428"/>
+        <!-- Reflecting pool -->
+        <rect x="100" y="400" width="560" height="60" fill="#0a1020"/>
+        <ellipse cx="380" cy="415" rx="250" ry="10" fill="#c9a84c" opacity="0.03"/>
+        <!-- Flag -->
+        <rect x="379" y="130" width="2" height="35" fill="#888" opacity="0.6"/>
+        <rect x="381" y="130" width="18" height="12" fill="#c9a84c" opacity="0.6"/>
+        <!-- Stars -->
+        <circle cx="50" cy="40" r="1" fill="white" opacity="0.6"/>
+        <circle cx="180" cy="25" r="1.2" fill="white" opacity="0.5"/>
+        <circle cx="600" cy="35" r="0.9" fill="white" opacity="0.7"/>
+        <circle cx="720" cy="50" r="1.1" fill="white" opacity="0.5"/>
+      </svg>`,
+    backBg:'linear-gradient(145deg,#060810 0%,#0e1428 40%,#060810 100%)',
+    accentColor:'rgba(200,170,90,0.9)',
+    badgeBg:'rgba(10,15,30,0.8)',
+    expColor:'#fc8',
+  },
+  fi:{
+    name:'FORMA ISLE', abbr:'FI',
+    frontBg:`
+      <svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+        <defs>
+          <linearGradient id="islesky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#001828"/>
+            <stop offset="50%" stop-color="#003050"/>
+            <stop offset="100%" stop-color="#005078"/>
+          </linearGradient>
+          <linearGradient id="ocean" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#005070"/>
+            <stop offset="100%" stop-color="#002040"/>
+          </linearGradient>
+        </defs>
+        <rect width="760" height="480" fill="url(#islesky)"/>
+        <!-- Island land mass -->
+        <ellipse cx="380" cy="380" rx="280" ry="70" fill="#1a3010"/>
+        <ellipse cx="380" cy="365" rx="240" ry="55" fill="#224018"/>
+        <!-- Palm trees -->
+        <rect x="280" y="260" width="8" height="120" fill="#5a3a10" rx="3" transform="rotate(-5,280,380)"/>
+        <ellipse cx="275" cy="255" rx="35" ry="20" fill="#1a5a10" transform="rotate(-20,275,255)"/>
+        <ellipse cx="290" cy="245" rx="30" ry="15" fill="#1a5a10" transform="rotate(10,290,245)"/>
+        <ellipse cx="268" cy="268" rx="25" ry="12" fill="#1a5a10" transform="rotate(-35,268,268)"/>
+        <rect x="460" y="270" width="7" height="100" fill="#5a3a10" rx="3" transform="rotate(8,460,370)"/>
+        <ellipse cx="465" cy="265" rx="30" ry="18" fill="#1a5a10" transform="rotate(15,465,265)"/>
+        <ellipse cx="450" cy="258" rx="25" ry="13" fill="#1a5a10" transform="rotate(-10,450,258)"/>
+        <!-- Ocean -->
+        <rect x="0" y="360" width="760" height="120" fill="url(#ocean)"/>
+        <!-- Bioluminescent waves -->
+        <path d="M 0 375 Q 100 368 200 375 Q 300 382 400 375 Q 500 368 600 375 Q 700 382 760 375" stroke="#00ffaa" fill="none" stroke-width="1.5" opacity="0.15"/>
+        <path d="M 0 390 Q 120 383 240 390 Q 360 397 480 390 Q 600 383 720 390 760 390" stroke="#00ddff" fill="none" stroke-width="1" opacity="0.1"/>
+        <!-- Stars -->
+        <circle cx="100" cy="50" r="1.2" fill="white" opacity="0.8"/>
+        <circle cx="250" cy="30" r="0.9" fill="white" opacity="0.7"/>
+        <circle cx="450" cy="45" r="1.1" fill="white" opacity="0.6"/>
+        <circle cx="650" cy="35" r="1" fill="white" opacity="0.8"/>
+        <circle cx="720" cy="60" r="0.8" fill="white" opacity="0.6"/>
+        <!-- Milky way -->
+        <path d="M 50 80 Q 380 50 720 90" stroke="white" fill="none" stroke-width="20" opacity="0.02"/>
+        <!-- Shooting star -->
+        <line x1="400" y1="60" x2="450" y2="90" stroke="white" stroke-width="1.5" opacity="0.5"/>
+      </svg>`,
+    backBg:'linear-gradient(145deg,#001828 0%,#003050 40%,#001828 100%)',
+    accentColor:'rgba(0,220,180,0.85)',
+    badgeBg:'rgba(0,40,60,0.7)',
+    expColor:'#8fe',
+  },
+  fp:{
+    name:'FORMA PRIME', abbr:'FP',
+    frontBg:`
+      <svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+        <defs>
+          <linearGradient id="primesky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#08060f"/>
+            <stop offset="40%" stop-color="#100e1e"/>
+            <stop offset="100%" stop-color="#181428"/>
+          </linearGradient>
+          <radialGradient id="nebula1" cx="30%" cy="40%">
+            <stop offset="0%" stop-color="#4020a0" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#4020a0" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="nebula2" cx="70%" cy="60%">
+            <stop offset="0%" stop-color="#0050c0" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#0050c0" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="760" height="480" fill="url(#primesky)"/>
+        <!-- Nebula clouds -->
+        <ellipse cx="200" cy="200" rx="300" ry="200" fill="url(#nebula1)"/>
+        <ellipse cx="550" cy="280" rx="280" ry="180" fill="url(#nebula2)"/>
+        <!-- Star cluster - dense -->
+        <circle cx="150" cy="120" r="1.5" fill="white" opacity="0.9"/>
+        <circle cx="200" cy="90" r="1" fill="white" opacity="0.8"/>
+        <circle cx="170" cy="150" r="0.8" fill="white" opacity="0.7"/>
+        <circle cx="250" cy="110" r="1.2" fill="white" opacity="0.85"/>
+        <circle cx="300" cy="80" r="0.9" fill="white" opacity="0.75"/>
+        <circle cx="350" cy="130" r="1.4" fill="white" opacity="0.9"/>
+        <circle cx="400" cy="60" r="1.1" fill="white" opacity="0.8"/>
+        <circle cx="450" cy="100" r="0.8" fill="white" opacity="0.7"/>
+        <circle cx="500" cy="140" r="1.3" fill="white" opacity="0.85"/>
+        <circle cx="550" cy="70" r="1" fill="white" opacity="0.8"/>
+        <circle cx="600" cy="120" r="1.5" fill="#aaffff" opacity="0.7"/>
+        <circle cx="650" cy="90" r="0.9" fill="white" opacity="0.75"/>
+        <circle cx="700" cy="140" r="1.2" fill="#ffffaa" opacity="0.8"/>
+        <!-- Mid stars -->
+        <circle cx="80" cy="200" r="1.2" fill="#ffaaff" opacity="0.6"/>
+        <circle cx="130" cy="250" r="0.8" fill="white" opacity="0.5"/>
+        <circle cx="320" cy="220" r="1" fill="white" opacity="0.6"/>
+        <circle cx="480" cy="240" r="1.1" fill="#aaaaff" opacity="0.6"/>
+        <circle cx="620" cy="200" r="0.9" fill="white" opacity="0.5"/>
+        <circle cx="720" cy="230" r="1.3" fill="white" opacity="0.6"/>
+        <!-- Distant galaxy band -->
+        <ellipse cx="380" cy="180" rx="380" ry="40" fill="white" opacity="0.025"/>
+        <!-- Planet -->
+        <circle cx="580" cy="300" r="40" fill="#2a1840" opacity="0.8"/>
+        <ellipse cx="580" cy="300" rx="65" ry="12" fill="#3a2860" opacity="0.4" transform="rotate(-15,580,300)"/>
+        <ellipse cx="580" cy="300" rx="55" ry="8" fill="#4a3870" opacity="0.3" transform="rotate(-15,580,300)"/>
+        <ellipse cx="580" cy="295" rx="25" ry="15" fill="#3a2058" opacity="0.6"/>
+        <!-- Shooting stars -->
+        <line x1="100" y1="300" x2="160" y2="340" stroke="white" stroke-width="1.5" opacity="0.4"/>
+        <line x1="250" y1="380" x2="310" y2="410" stroke="white" stroke-width="1" opacity="0.3"/>
+      </svg>`,
+    backBg:'linear-gradient(145deg,#08060f 0%,#100e1e 40%,#08060f 100%)',
+    accentColor:'rgba(160,140,255,0.9)',
+    badgeBg:'rgba(30,20,60,0.75)',
+    expColor:'#aaf',
+  },
+  fh:{
+    name:'FORMA HIGHLAND', abbr:'FH',
+    frontBg:`
+      <svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+        <defs>
+          <linearGradient id="highsky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0e1c14"/>
+            <stop offset="50%" stop-color="#1e3424"/>
+            <stop offset="100%" stop-color="#2a4030"/>
+          </linearGradient>
+        </defs>
+        <rect width="760" height="480" fill="url(#highsky)"/>
+        <!-- Rolling heather highlands -->
+        <ellipse cx="0" cy="400" rx="300" ry="150" fill="#2a1830"/>
+        <ellipse cx="200" cy="380" rx="280" ry="130" fill="#301a38"/>
+        <ellipse cx="450" cy="360" rx="300" ry="140" fill="#2a1830"/>
+        <ellipse cx="700" cy="390" rx="250" ry="120" fill="#241430"/>
+        <!-- Mid hills - heather purple -->
+        <ellipse cx="100" cy="340" rx="220" ry="100" fill="#3a2040"/>
+        <ellipse cx="380" cy="320" rx="280" ry="110" fill="#402848"/>
+        <ellipse cx="650" cy="345" rx="220" ry="100" fill="#3a2040"/>
+        <!-- Foreground rolling hills -->
+        <ellipse cx="200" cy="420" rx="260" ry="80" fill="#1a1020"/>
+        <ellipse cx="560" cy="430" rx="280" ry="75" fill="#1a1020"/>
+        <!-- Ruins/castle outline -->
+        <rect x="330" y="270" width="100" height="100" fill="#1a1228" opacity="0.8"/>
+        <rect x="328" y="258" width="18" height="18" fill="#1a1228" opacity="0.8"/>
+        <rect x="358" y="252" width="18" height="26" fill="#1a1228" opacity="0.8"/>
+        <rect x="388" y="262" width="18" height="16" fill="#1a1228" opacity="0.8"/>
+        <rect x="414" y="268" width="18" height="10" fill="#1a1228" opacity="0.8"/>
+        <!-- Loch / water at bottom -->
+        <rect x="0" y="440" width="760" height="40" fill="#0a1018" opacity="0.7"/>
+        <!-- Mist -->
+        <ellipse cx="380" cy="360" rx="400" ry="30" fill="white" opacity="0.035"/>
+        <!-- Stars / northern sky -->
+        <circle cx="100" cy="50" r="1.5" fill="white" opacity="0.7"/>
+        <circle cx="220" cy="35" r="1" fill="white" opacity="0.8"/>
+        <circle cx="380" cy="55" r="1.2" fill="white" opacity="0.6"/>
+        <circle cx="550" cy="40" r="0.9" fill="white" opacity="0.7"/>
+        <circle cx="680" cy="30" r="1.3" fill="white" opacity="0.6"/>
+        <!-- Aurora borealis -->
+        <path d="M 0 120 Q 200 90 400 110 Q 600 130 760 100" stroke="#00ff88" fill="none" stroke-width="8" opacity="0.06"/>
+        <path d="M 0 140 Q 200 110 400 130 Q 600 150 760 120" stroke="#00aaff" fill="none" stroke-width="5" opacity="0.05"/>
+      </svg>`,
+    backBg:'linear-gradient(145deg,#0e1c14 0%,#1e3424 40%,#0e1814 100%)',
+    accentColor:'rgba(150,255,180,0.8)',
+    badgeBg:'rgba(15,30,20,0.75)',
+    expColor:'#8fb',
+  },
+  co:{
+    name:'FORMA COAST', abbr:'CO',
+    frontBg:`
+      <svg xmlns="http://www.w3.org/2000/svg" width="760" height="480" viewBox="0 0 760 480">
+        <defs>
+          <linearGradient id="coastsky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#001030"/>
+            <stop offset="50%" stop-color="#002050"/>
+            <stop offset="100%" stop-color="#003060"/>
+          </linearGradient>
+          <linearGradient id="coastocean" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#003060"/>
+            <stop offset="100%" stop-color="#001830"/>
+          </linearGradient>
+        </defs>
+        <rect width="760" height="480" fill="url(#coastsky)"/>
+        <!-- Lighthouse -->
+        <rect x="580" y="180" width="30" height="160" fill="#d0c8b8"/>
+        <polygon points="570,180 620,180 595,155" fill="#c9a84c"/>
+        <rect x="574" y="175" width="42" height="10" fill="#888"/>
+        <ellipse cx="595" cy="185" rx="16" ry="8" fill="#ffee88" opacity="0.4"/>
+        <!-- Light beam -->
+        <polygon points="595,180 400,300 420,310 595,190" fill="#ffee88" opacity="0.06"/>
+        <!-- Sea cliffs -->
+        <polygon points="0,480 0,280 80,250 160,280 200,240 240,270 280,250 320,280 350,300 350,480" fill="#2a2010"/>
+        <polygon points="350,480 350,300 380,280 420,310 460,290 500,320 540,295 580,320 580,340 580,480" fill="#2a2010"/>
+        <!-- Ocean -->
+        <rect x="0" y="320" width="760" height="160" fill="url(#coastocean)"/>
+        <!-- Waves -->
+        <path d="M 0 340 Q 80 332 160 340 Q 240 348 320 340 Q 400 332 480 340 Q 560 348 640 340 Q 700 334 760 340" stroke="white" fill="none" stroke-width="2" opacity="0.2"/>
+        <path d="M 0 360 Q 100 352 200 360 Q 300 368 400 360 Q 500 352 600 360 Q 700 368 760 360" stroke="white" fill="none" stroke-width="1.5" opacity="0.15"/>
+        <!-- Foam -->
+        <ellipse cx="200" cy="345" rx="60" ry="6" fill="white" opacity="0.08"/>
+        <ellipse cx="500" cy="355" rx="50" ry="5" fill="white" opacity="0.07"/>
+        <!-- Stars -->
+        <circle cx="80" cy="50" r="1.2" fill="white" opacity="0.7"/>
+        <circle cx="200" cy="30" r="1" fill="white" opacity="0.6"/>
+        <circle cx="350" cy="55" r="0.9" fill="white" opacity="0.8"/>
+        <circle cx="480" cy="35" r="1.3" fill="white" opacity="0.6"/>
+        <circle cx="700" cy="50" r="1" fill="white" opacity="0.7"/>
+        <!-- Moon -->
+        <circle cx="120" cy="80" r="22" fill="#f0e8c8" opacity="0.75"/>
+        <ellipse cx="120" cy="370" rx="16" ry="50" fill="#f0e8c8" opacity="0.05"/>
+      </svg>`,
+    backBg:'linear-gradient(145deg,#001030 0%,#002050 40%,#001030 100%)',
+    accentColor:'rgba(80,200,255,0.85)',
+    badgeBg:'rgba(0,20,50,0.75)',
+    expColor:'#8cf',
+  }
+};
+
+let currentPhotoDataURL = null;
+
+function applyRegion(){
+  const key = document.getElementById('f_region').value;
+  const R = REGIONS[key];
+  if(!R) return;
+
+  // Front background
+  document.getElementById('dl-bg-front').innerHTML = R.frontBg;
+  document.getElementById('dl-bg-front').style.cssText = 'position:absolute;inset:0;z-index:0;';
+
+  // Back background
+  document.getElementById('dl-bg-back').style.cssText = `position:absolute;inset:0;z-index:0;background:${R.backBg};`;
+
+  // Class badge
+  document.getElementById('dl-class-badge').style.background = R.badgeBg;
+
+  // Expiry color
+  document.getElementById('d_exp').style.color = R.expColor;
+
+  // State name
+  document.getElementById('d_statename').textContent = R.name;
+}
+
+function make1DBarcode(str){
+  const el = document.getElementById('dl-1d-barcode');
+  el.innerHTML = '';
+  const seed = (str||'').replace(/\W/g,'') || 'FP9720881';
+  const ws = [1,2,1,1,2,1,2,1,1,2,1,1,1,2,1,2,1,1,2,1,1,2,1,1,1,2,1,2,1,1,2,1];
+  const hs = [100,75,100,85,100,65,100,80,100,70,100,90,80,100,70,100,85,100,75,100,65,100,80,100,70,100,90,80,100,70,100,90];
+  for(let i=0;i<32;i++){
+    const s = document.createElement('span');
+    const d = parseInt(seed[i % seed.length])||1;
+    s.style.cssText = `display:inline-block;width:${ws[i]*0.7+(d%3)*0.4}px;height:${hs[i]*0.28}px;background:rgba(255,255,255,0.55);border-radius:0.5px;align-self:flex-end;`;
+    el.appendChild(s);
+  }
+}
+
+function makePDF417(){
+  const el = document.getElementById('dl-pdf417');
+  el.innerHTML = '';
+  // Generate realistic PDF417 look — multiple rows of varied-width bars
+  const rowCount = 8;
+  for(let r=0;r<rowCount;r++){
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;gap:1px;height:' + (60/rowCount - 1) + 'px;flex:1;';
+    const numBars = 40 + Math.floor(Math.random()*20);
+    for(let b=0;b<numBars;b++){
+      const bar = document.createElement('div');
+      const w = Math.random() > 0.7 ? 2 + Math.random()*2 : 1;
+      const light = Math.random() > 0.5;
+      bar.style.cssText = `min-width:${w}px;background:${light ? 'rgba(255,255,255,0.0)' : 'rgba(255,255,255,0.65)'};border-radius:0.3px;`;
+      row.appendChild(bar);
+    }
+    el.appendChild(row);
+  }
+}
+
+function generateDD(lnum){
+  // Realistic DD number — looks like state-issued doc discriminator
+  const base = (lnum||'').replace(/\W/g,'').toUpperCase();
+  let dd = '0';
+  for(let i=0;i<20;i++) dd += Math.floor(Math.random()*10);
+  return 'DD ' + dd;
+}
+
+function render(){
+  const get = id => (document.getElementById(id)||{}).value || '';
+  const last = get('f_last').toUpperCase();
+  const first = get('f_first').toUpperCase();
+  const mid = get('f_mid').toUpperCase();
+  const fname = mid ? first + ' ' + mid : first;
+  const lnum = get('f_lnum').toUpperCase();
+
+  document.getElementById('d_last').textContent = last;
+  document.getElementById('d_firstname').textContent = fname;
+  document.getElementById('d_addr1').textContent = get('f_addr1').toUpperCase();
+  document.getElementById('d_addr2').textContent = get('f_addr2').toUpperCase();
+  document.getElementById('d_dob').textContent = get('f_dob');
+  document.getElementById('d_iss').textContent = get('f_iss');
+  document.getElementById('d_exp').textContent = get('f_exp');
+  document.getElementById('d_sex').textContent = get('f_sex');
+  document.getElementById('d_ht').textContent = get('f_ht');
+  document.getElementById('d_wt').textContent = get('f_wt');
+  document.getElementById('d_eyes').textContent = get('f_eyes');
+  document.getElementById('d_hair').textContent = get('f_hair');
+  document.getElementById('d_rest').textContent = get('f_rest') || 'NONE';
+  document.getElementById('d_lnum').textContent = lnum;
+  document.getElementById('d_sig').textContent = get('f_sig');
+  document.getElementById('d_type').textContent = get('f_type');
+  document.getElementById('d_class').textContent = get('f_class').replace('Class ','');
+
+  // Donor
+  const donor = get('f_donor');
+  document.getElementById('donor-block').style.display = donor === 'yes' ? 'block' : 'none';
+
+  // Back fields
+  document.getElementById('db_name').textContent = last + ', ' + fname;
+  document.getElementById('db_lnum').textContent = lnum;
+  document.getElementById('db_addr').textContent = (get('f_addr1') + ', ' + get('f_addr2')).toUpperCase();
+  document.getElementById('db_rest').textContent = get('f_rest') || 'NONE';
+
+  // Barcode num
+  const rk = document.getElementById('f_region').value;
+  const abbr = (REGIONS[rk]||{}).abbr || 'NF';
+  document.getElementById('d_barcode1d').textContent = `FP · ${abbr} · ${lnum}`;
+  make1DBarcode(lnum);
+
+  // DD
+  document.getElementById('d_dd').textContent = generateDD(lnum);
+
+  // Legal text (back)
+  const statename = (REGIONS[rk]||{}).name || 'NORTH FORMA';
+  document.getElementById('dl-back-legal').textContent =
+    `This credential is the property of the Department of Motor Vehicles, ${statename}, United States of Forma. ` +
+    `Unauthorized reproduction or alteration is a violation of USF Code §47.2. ` +
+    `Return to nearest DMV if found. FOR ENTERTAINMENT USE ONLY — Form Porn LLC. ` +
+    `Not a valid government-issued document. All information is fictional.`;
+}
+
+function loadPhoto(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    currentPhotoDataURL = ev.target.result;
+    // Front photo
+    const img = document.getElementById('dl-photo');
+    img.src = ev.target.result;
+    img.style.display = 'block';
+    document.getElementById('photoPlaceholder').style.display = 'none';
+    // Ghost photo
+    const ghost = document.getElementById('dl-ghost-img');
+    ghost.src = ev.target.result;
+    ghost.style.display = 'block';
+    // Back photo
+    const backImg = document.getElementById('dl-back-photo-img');
+    backImg.src = ev.target.result;
+    backImg.style.display = 'block';
+    // Thumb
+    document.getElementById('photoThumb').src = ev.target.result;
+    document.getElementById('photoThumb').style.display = 'block';
+    document.getElementById('photoLabel').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function exportFront(){
+  const el = document.getElementById('dl-front');
+  const canvas = await html2canvas(el,{scale:3,useCORS:true,backgroundColor:null,logging:false,allowTaint:true});
+  const link = document.createElement('a');
+  link.download = 'forma-license-front.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+async function exportBack(){
+  const el = document.getElementById('dl-back');
+  const canvas = await html2canvas(el,{scale:3,useCORS:true,backgroundColor:null,logging:false,allowTaint:true});
+  const link = document.createElement('a');
+  link.download = 'forma-license-back.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+// Init
+applyRegion();
+render();
+makePDF417();
+</script>
+</body>
+</html>

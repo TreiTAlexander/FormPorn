@@ -151,7 +151,7 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 </div>
 
 <div class="sdiv">License Type</div>
-<div class="fg"><label>License Title (e.g. "TEXAS BARBER")</label><input id="f-title" value="TEXAS BARBER" oninput="update()"></div>
+<div class="fg"><label>License Title (e.g. "TEXAS BARBER")</label><input id="f-title" value="FORMA BARBER" oninput="update()"></div>
 <div class="fg"><label>Class / Type (e.g. "CLASS A BARBER")</label><input id="f-class" value="CLASS A BARBER" oninput="update()"></div>
 <div class="fg"><label>Permit Type (optional line)</label><input id="f-permit" value="and Booth Rental Permit" oninput="update()"></div>
 <div class="fg"><label>Certification Body</label><input id="f-dept" value="Texas Department of Licensing and Regulation" oninput="update()"></div>
@@ -163,11 +163,11 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 
 <div class="sdiv">Officials</div>
 <div class="fr2">
-<div class="fg"><label>Presiding Officer Name</label><input id="f-officer" value="Rick Martinez" oninput="update()"></div>
+<div class="fg"><label>Presiding Officer Name</label><input id="f-officer" value="R. Holloway" oninput="update()"></div>
 <div class="fg"><label>Presiding Officer Title</label><input id="f-officertitle" value="Presiding Officer" oninput="update()"></div>
 </div>
 <div class="fr2">
-<div class="fg"><label>Comptroller / Second Official</label><input id="f-comp" value="Glenn Hegar" oninput="update()"></div>
+<div class="fg"><label>Comptroller / Second Official</label><input id="f-comp" value="M. Holloway" oninput="update()"></div>
 <div class="fg"><label>Comptroller Title</label><input id="f-comptitle" value="Comptroller" oninput="update()"></div>
 </div>
 
@@ -387,72 +387,4 @@ function downloadJPEG(docId) {
     const a=document.createElement('a');a.download='formporn.jpg';a.href=c.toDataURL('image/jpeg',0.95);a.click();
   }).catch(()=>alert('Try PDF instead.'));
 }
-</script>
-<script src="access.js"></script>
-<script>
-// FormPorn Access Gate — injected by stabilization script
-function _currentForm() {
-  return window.location.pathname.split('/').pop() || 'index.html';
-}
-function downloadPDF(docId) {
-  FP.requireAccess(_currentForm(), function() { _fpDoPDF(docId); });
-}
-function downloadPNG(docId) {
-  FP.requireAccess(_currentForm(), function() { _fpDoPNG(docId); });
-}
-function downloadJPEG(docId) {
-  FP.requireAccess(_currentForm(), function() { _fpDoJPEG(docId); });
-}
-// Legacy aliases used in older forms
-function dlPDF(docId) { downloadPDF(docId); }
-function dlPNG(docId) { downloadPNG(docId); }
-function dlJPEG(docId) { downloadJPEG(docId); }
-
-function _fpDoPDF(docId) {
-  const el = document.getElementById(docId);
-  if (!el) { window.print(); return; }
-  const allStyles = Array.from(document.styleSheets).map(s => {
-    try { return Array.from(s.cssRules).map(r => r.cssText).join('\n'); } catch(e) { return ''; }
-  }).join('\n');
-  const fontLink = document.querySelector('link[href*="fonts.googleapis"]');
-  const w = window.open('', '_blank', 'width=900,height=700');
-  w.document.write('<!DOCTYPE html><html><head><title>Form Porn</title>');
-  if (fontLink) w.document.write(fontLink.outerHTML);
-  w.document.write('<style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#ddd;display:flex;justify-content:center;padding:30px;}@media print{body{background:white;padding:0;}@page{margin:0.5in;}}' + allStyles + '</style></head><body>');
-  w.document.write(el.outerHTML);
-  w.document.write('<scr'+'ipt>document.fonts.ready.then(()=>{setTimeout(()=>window.print(),800)});<\/scr'+'ipt></body></html>');
-  w.document.close();
-}
-function _fpDoPNG(docId) {
-  const el = document.getElementById(docId);
-  if (!el) { alert('Generate a document first.'); return; }
-  function capture() {
-    html2canvas(el, {scale:3, useCORS:true, backgroundColor:'#ffffff', logging:false}).then(c => {
-      const a = document.createElement('a'); a.download = 'formporn.png';
-      a.href = c.toDataURL('image/png', 1.0); a.click();
-    }).catch(() => alert('PNG failed. Use PDF instead.'));
-  }
-  if (typeof html2canvas === 'undefined') {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    s.onload = capture; document.head.appendChild(s);
-  } else { capture(); }
-}
-function _fpDoJPEG(docId) {
-  const el = document.getElementById(docId);
-  if (!el) { alert('Generate a document first.'); return; }
-  function capture() {
-    html2canvas(el, {scale:2, useCORS:true, backgroundColor:'#ffffff', logging:false}).then(c => {
-      const a = document.createElement('a'); a.download = 'formporn.jpg';
-      a.href = c.toDataURL('image/jpeg', 0.95); a.click();
-    }).catch(() => alert('JPEG failed. Use PDF instead.'));
-  }
-  if (typeof html2canvas === 'undefined') {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    s.onload = capture; document.head.appendChild(s);
-  } else { capture(); }
-}
-</script>
-
-</body></html>
+</script></body></html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work Badge Generator — Form Porn</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=DM+Mono:wght@300;400;500&family=Oswald:wght@400;500;600;700&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#06070f;--panel:#0d0e1c;--gold:#c9a84c;--gold2:#e8c96a;--gr:#5a6b88;--wh:#fff;--border:rgba(200,170,90,0.18);}
+body{background:var(--bg);color:var(--wh);font-family:'DM Mono',monospace;min-height:100vh;padding:24px 16px 80px;display:flex;flex-direction:column;align-items:center;}
+.topbar{width:100%;max-width:1100px;display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;padding-bottom:14px;border-bottom:1px solid var(--border);}
+.topbar a{color:var(--gold);text-decoration:none;font-size:11px;letter-spacing:2px;}
+h1{font-family:'Playfair Display',serif;font-size:26px;color:var(--gold2);margin-bottom:3px;text-align:center;}
+.subtitle{font-size:10px;letter-spacing:3px;color:var(--gr);margin-bottom:28px;text-align:center;}
+.workspace{display:grid;grid-template-columns:300px 1fr;gap:28px;width:100%;max-width:1100px;align-items:start;}
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:12px;}
+.pt{font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.field{margin-bottom:11px;}
+.field label{display:block;font-size:8px;letter-spacing:2px;color:var(--gr);text-transform:uppercase;margin-bottom:4px;}
+.field input,.field select{width:100%;background:rgba(255,255,255,0.04);border:1px solid rgba(200,170,90,0.15);border-radius:4px;padding:8px 10px;color:var(--wh);font-family:'DM Mono',monospace;font-size:11px;outline:none;transition:border 0.2s;}
+.field input:focus,.field select:focus{border-color:var(--gold);}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.photo-drop{border:1.5px dashed rgba(200,170,90,0.25);border-radius:6px;padding:14px;text-align:center;cursor:pointer;position:relative;min-height:70px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;}
+.photo-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.photo-drop p{font-size:9px;color:var(--gr);letter-spacing:1px;}
+.photo-prev{width:50px;height:62px;object-fit:cover;border-radius:2px;display:none;}
+.btn-gold{width:100%;padding:11px;background:linear-gradient(135deg,#c9a84c,#e8c96a);color:#07080f;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;border:none;border-radius:6px;cursor:pointer;font-weight:700;margin-top:6px;}
+.btn-outline{width:100%;padding:9px;background:transparent;color:var(--gold);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:6px;cursor:pointer;margin-top:6px;}
+.note{margin-top:10px;padding:8px;background:rgba(255,100,100,0.05);border:1px solid rgba(255,100,100,0.15);border-radius:4px;font-size:8px;color:rgba(255,150,150,0.7);line-height:1.6;}
+.preview-col{position:sticky;top:20px;}
+.plabel{font-size:9px;letter-spacing:3px;color:var(--gr);text-transform:uppercase;margin-bottom:12px;text-align:center;}
+.badge-grid{display:flex;flex-direction:column;gap:24px;align-items:center;}
+
+/* ═══════════════════════════════════════
+   BADGE STYLES
+═══════════════════════════════════════ */
+
+/* CR80 card size = 3.375" × 2.125" → at screen 340×214px */
+.badge{
+  width:340px;height:214px;
+  border-radius:10px;
+  position:relative;overflow:hidden;
+  box-shadow:0 20px 60px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.07);
+  font-family:'Barlow Condensed',sans-serif;
+  cursor:default;
+  transform:rotateX(3deg) rotateY(-1deg);
+  transition:transform 0.4s;
+}
+.badge:hover{transform:rotateX(0) rotateY(0) scale(1.02);}
+
+/* ── CORPORATE BADGE ── */
+.badge.corporate{background:linear-gradient(145deg,#f8f8f8 0%,#eeeeee 100%);}
+.corp-header{position:absolute;top:0;left:0;right:0;height:44px;display:flex;align-items:center;padding:0 14px;gap:10px;}
+.corp-logo-circle{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#fff;flex-shrink:0;}
+.corp-org{font-size:13px;font-weight:700;letter-spacing:1px;color:#fff;font-family:'Oswald',sans-serif;}
+.corp-photo{position:absolute;top:54px;left:14px;width:78px;height:96px;border:2px solid rgba(0,0,0,0.12);border-radius:3px;overflow:hidden;background:rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;}
+.corp-photo img{width:100%;height:100%;object-fit:cover;display:none;}
+.corp-photo-ph{font-size:8px;color:rgba(0,0,0,0.25);text-align:center;letter-spacing:1px;font-family:'DM Mono',monospace;}
+.corp-fields{position:absolute;top:56px;left:104px;right:12px;}
+.corp-name{font-size:18px;font-weight:700;color:#1a1a1a;line-height:1.1;margin-bottom:3px;}
+.corp-jobtitle{font-size:11px;font-weight:500;letter-spacing:1px;color:#555;text-transform:uppercase;margin-bottom:6px;}
+.corp-dept{font-size:10px;color:#888;font-family:'DM Mono',monospace;letter-spacing:1px;}
+.corp-id{font-size:9px;color:#aaa;font-family:'DM Mono',monospace;margin-top:4px;letter-spacing:1px;}
+.corp-bottom{position:absolute;bottom:0;left:0;right:0;height:32px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;}
+.corp-barcode-sm{display:flex;gap:0.8px;height:18px;align-items:flex-end;}
+.corp-barcode-sm span{display:inline-block;border-radius:0.3px;}
+.corp-fp{font-size:6.5px;letter-spacing:1.5px;font-family:'DM Mono',monospace;opacity:0.3;}
+
+/* ── GOVERNMENT / FEDERAL BADGE ── */
+.badge.government{background:linear-gradient(145deg,#e8ecf4 0%,#d8e0ee 100%);}
+.gov-stripe{position:absolute;top:0;left:0;right:0;height:8px;}
+.gov-body{position:absolute;top:8px;left:0;right:0;bottom:0;padding:10px 14px;}
+.gov-agency{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#1a2a4a;margin-bottom:6px;font-family:'DM Mono',monospace;}
+.gov-photo{position:absolute;top:18px;left:14px;width:72px;height:90px;border:1.5px solid #8a9ab8;border-radius:2px;overflow:hidden;background:#c8d4e0;display:flex;align-items:center;justify-content:center;}
+.gov-photo img{width:100%;height:100%;object-fit:cover;display:none;}
+.gov-photo-ph{font-size:7px;color:rgba(26,42,74,0.3);text-align:center;letter-spacing:1px;font-family:'DM Mono',monospace;}
+.gov-data{position:absolute;top:18px;left:96px;right:12px;}
+.gov-name{font-size:17px;font-weight:700;color:#0a1428;line-height:1.1;margin-bottom:2px;font-family:'Oswald',sans-serif;}
+.gov-title{font-size:10px;font-weight:600;letter-spacing:2px;color:#c9a84c;text-transform:uppercase;margin-bottom:4px;}
+.gov-dept{font-size:9.5px;color:#3a5a8a;letter-spacing:0.5px;line-height:1.4;}
+.gov-clearance{position:absolute;top:20px;right:12px;padding:3px 8px;border-radius:3px;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;font-family:'DM Mono',monospace;}
+.gov-id-row{position:absolute;bottom:34px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-end;}
+.gov-id-num{font-family:'DM Mono',monospace;font-size:9px;color:#5a7aaa;letter-spacing:2px;}
+.gov-bottom{position:absolute;bottom:0;left:0;right:0;height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;}
+.gov-eagle{font-size:16px;opacity:0.4;}
+
+/* ── FOREIGN NATIONAL BADGE ── */
+.badge.foreign{background:linear-gradient(145deg,#f0f4e8 0%,#e4ecdc 100%);}
+.fn-header{position:absolute;top:0;left:0;right:0;height:40px;display:flex;align-items:center;padding:0 12px;gap:8px;}
+.fn-flag{width:32px;height:20px;border-radius:2px;border:0.5px solid rgba(0,0,0,0.15);flex-shrink:0;}
+.fn-agency{font-size:10px;font-weight:700;letter-spacing:2px;color:#fff;font-family:'Oswald',sans-serif;}
+.fn-sub{font-size:7px;color:rgba(255,255,255,0.7);letter-spacing:1.5px;font-family:'DM Mono',monospace;}
+.fn-photo{position:absolute;top:48px;left:12px;width:70px;height:88px;border:1.5px solid rgba(0,0,0,0.15);border-radius:2px;overflow:hidden;background:#c8d8c0;display:flex;align-items:center;justify-content:center;}
+.fn-photo img{width:100%;height:100%;object-fit:cover;display:none;}
+.fn-ph{font-size:7px;color:rgba(0,0,0,0.25);text-align:center;letter-spacing:1px;font-family:'DM Mono',monospace;}
+.fn-data{position:absolute;top:50px;left:92px;right:12px;}
+.fn-name{font-size:16px;font-weight:700;color:#1a2a0a;line-height:1.1;margin-bottom:2px;font-family:'Oswald',sans-serif;}
+.fn-title{font-size:9.5px;font-weight:600;letter-spacing:2px;color:#4a7a30;text-transform:uppercase;margin-bottom:3px;}
+.fn-country{font-size:9px;color:#5a6a4a;letter-spacing:0.5px;}
+.fn-nationality{font-size:8px;color:#7a8a6a;margin-top:2px;}
+.fn-bottom{position:absolute;bottom:0;left:0;right:0;height:30px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;}
+.fn-fp{font-size:6px;color:rgba(0,0,0,0.2);letter-spacing:2px;font-family:'DM Mono',monospace;}
+
+/* HOLOGRAPHIC STRIP (all badges) */
+.holo-strip{position:absolute;pointer-events:none;background:repeating-linear-gradient(110deg,rgba(255,255,255,0) 0px,rgba(255,255,255,0.08) 4px,rgba(200,220,255,0.06) 8px,rgba(255,200,150,0.06) 12px,rgba(255,255,255,0) 16px);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/index.html">← Form Porn</a>
+  <span style="font-size:12px;letter-spacing:3px;color:var(--gold2);">Work Badge Generator</span>
+  <a href="/pricing.html">$3 to Export</a>
+</div>
+
+<h1>Work Badge Generator</h1>
+<p class="subtitle">Corporate · Government · Foreign National · Form Porn Universe</p>
+
+<div class="workspace">
+<div>
+  <div class="panel">
+    <div class="pt">Badge Style</div>
+    <div class="field">
+      <label>Badge Type</label>
+      <select id="f_style" onchange="applyStyle();render()">
+        <option value="corporate">Corporate / Company</option>
+        <option value="government">Government / Federal</option>
+        <option value="foreign">Foreign National</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Color Theme</label>
+      <select id="f_color" onchange="applyStyle();render()">
+        <option value="navy">Navy Blue</option>
+        <option value="black">Onyx Black</option>
+        <option value="red">Federal Red</option>
+        <option value="green">Forest Green</option>
+        <option value="gold">Gold Authority</option>
+        <option value="teal">Teal Corporate</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Clearance Level</label>
+      <select id="f_clearance" onchange="render()">
+        <option value="none">None / Standard</option>
+        <option value="visitor">VISITOR</option>
+        <option value="authorized">AUTHORIZED</option>
+        <option value="restricted">RESTRICTED</option>
+        <option value="classified">CLASSIFIED</option>
+        <option value="secret">SECRET</option>
+        <option value="tssci">TS/SCI</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="pt">Cardholder Info</div>
+    <div class="r2">
+      <div class="field"><label>First Name</label><input id="f_first" value="Forma" oninput="render()"></div>
+      <div class="field"><label>Last Name</label><input id="f_last" value="Papeston" oninput="render()"></div>
+    </div>
+    <div class="field"><label>Job Title</label><input id="f_jobtitle" value="Senior Director of Operations" oninput="render()"></div>
+    <div class="field"><label>Department</label><input id="f_dept" value="Strategic Operations" oninput="render()"></div>
+    <div class="field"><label>Organization</label><input id="f_org" value="FORMA INDUSTRIES" oninput="render()"></div>
+    <div class="field"><label>Employee / Badge ID</label><input id="f_id" value="FP-97208-OPS" oninput="render()"></div>
+    <div class="field"><label>Nationality (Foreign badge)</label><input id="f_nationality" value="United Regions of Forma" oninput="render()"></div>
+    <div class="field"><label>Country Code (Foreign)</label><input id="f_country" value="URF" oninput="render()"></div>
+  </div>
+
+  <div class="panel">
+    <div class="pt">Photo</div>
+    <div class="photo-drop" onclick="document.getElementById('badgePhoto').click()">
+      <input type="file" id="badgePhoto" accept="image/*" onchange="loadPhoto(event)">
+      <img id="photoThumb" class="photo-prev">
+      <p id="photoLabel">📷 Upload photo</p>
+    </div>
+  </div>
+
+  <button class="btn-gold" onclick="exportBadge()">⬇ Export Badge — $3</button>
+  <button class="btn-outline" onclick="window.print()">🖨 Print</button>
+  <div class="note">⚠ "United Regions of Forma" is fictional. Form Porn entertainment use only. Not a real government-issued credential.</div>
+</div>
+
+<div class="preview-col">
+  <p class="plabel">Live Preview</p>
+  <div class="badge-grid">
+
+    <!-- CORPORATE BADGE -->
+    <div class="badge corporate" id="badge-corporate">
+      <div class="corp-header" id="corp-header">
+        <div class="corp-logo-circle" id="corp-logo-circle">FP</div>
+        <span class="corp-org" id="corp-org">FORMA INDUSTRIES</span>
+      </div>
+      <div class="corp-photo" id="corp-photo">
+        <div class="corp-photo-ph" id="corp-ph">PHOTO</div>
+        <img id="corp-img">
+      </div>
+      <div class="corp-fields">
+        <div class="corp-name" id="corp-name">Forma Papeston</div>
+        <div class="corp-jobtitle" id="corp-jobtitle">Senior Director of Operations</div>
+        <div class="corp-dept" id="corp-dept">Strategic Operations</div>
+        <div class="corp-id" id="corp-id">ID: FP-97208-OPS</div>
+        <div class="corp-id" id="corp-clearance-badge" style="display:none;margin-top:4px;"></div>
+      </div>
+      <div class="holo-strip" style="right:0;top:0;bottom:0;width:40px;"></div>
+      <div class="corp-bottom" id="corp-bottom">
+        <div class="corp-barcode-sm" id="corp-barcode"></div>
+        <span class="corp-fp">FORM PORN © FP</span>
+      </div>
+    </div>
+
+    <!-- GOVERNMENT BADGE -->
+    <div class="badge government" id="badge-government" style="display:none;">
+      <div class="gov-stripe" id="gov-stripe"></div>
+      <div class="gov-body">
+        <div class="gov-agency" id="gov-agency">FORMA DEPT. OF OPERATIONS · UNITED REGIONS</div>
+        <div class="gov-photo" id="gov-photo">
+          <div class="gov-photo-ph" id="gov-ph">PHOTO</div>
+          <img id="gov-img">
+        </div>
+        <div class="gov-data">
+          <div class="gov-name" id="gov-name">PAPESTON, FORMA</div>
+          <div class="gov-title" id="gov-title">Senior Director</div>
+          <div class="gov-dept" id="gov-dept">Strategic Operations<br>United Regions of Forma</div>
+        </div>
+        <div class="gov-clearance" id="gov-clearance" style="display:none;"></div>
+      </div>
+      <div class="gov-id-row">
+        <span class="gov-id-num" id="gov-id">ID: FP-97208-OPS</span>
+      </div>
+      <div class="holo-strip" style="bottom:28px;left:0;right:0;height:3px;"></div>
+      <div class="gov-bottom" id="gov-bottom">
+        <span class="gov-eagle">🦅</span>
+        <div class="corp-barcode-sm" id="gov-barcode"></div>
+        <span class="corp-fp">FORM PORN © FP</span>
+      </div>
+    </div>
+
+    <!-- FOREIGN NATIONAL BADGE -->
+    <div class="badge foreign" id="badge-foreign" style="display:none;">
+      <div class="fn-header" id="fn-header">
+        <div class="fn-flag" id="fn-flag" style="background:linear-gradient(180deg,#1a3a6a 33%,#fff 33%,#fff 66%,#c9a84c 66%);"></div>
+        <div>
+          <div class="fn-agency" id="fn-agency">FORMA INDUSTRIES</div>
+          <div class="fn-sub">FOREIGN NATIONAL ACCESS</div>
+        </div>
+      </div>
+      <div class="fn-photo" id="fn-photo">
+        <div class="fn-ph" id="fn-ph">PHOTO</div>
+        <img id="fn-img">
+      </div>
+      <div class="fn-data">
+        <div class="fn-name" id="fn-name">FORMA PAPESTON</div>
+        <div class="fn-title" id="fn-title">Senior Director</div>
+        <div class="fn-country" id="fn-country">United Regions of Forma</div>
+        <div class="fn-nationality">Nationality: <span id="fn-nat">URF</span></div>
+        <div class="fn-country" style="margin-top:3px;" id="fn-dept">Strategic Operations</div>
+      </div>
+      <div class="holo-strip" style="right:0;top:0;bottom:0;width:32px;"></div>
+      <div class="fn-bottom" id="fn-bottom">
+        <div class="corp-barcode-sm" id="fn-barcode"></div>
+        <span class="fn-fp">FORM PORN © FP · ENTERTAINMENT USE ONLY</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+const COLORS = {
+  navy:{header:'linear-gradient(90deg,#0a1a3a 0%,#1a3060 100%)',text:'rgba(200,220,255,0.9)',accent:'#4a8aff',badge_bg:'rgba(10,26,60,0.15)',clearance_bg:'#1a3060',clearance_color:'#fff'},
+  black:{header:'linear-gradient(90deg,#0a0a0a 0%,#1a1a1a 100%)',text:'rgba(220,220,220,0.9)',accent:'#c9a84c',badge_bg:'rgba(10,10,10,0.12)',clearance_bg:'#1a1a1a',clearance_color:'#fff'},
+  red:{header:'linear-gradient(90deg,#5a0a0a 0%,#8a1a1a 100%)',text:'rgba(255,220,220,0.9)',accent:'#ff4444',badge_bg:'rgba(90,10,10,0.1)',clearance_bg:'#8a1a1a',clearance_color:'#fff'},
+  green:{header:'linear-gradient(90deg,#0a3a1a 0%,#1a5a2a 100%)',text:'rgba(200,255,220,0.9)',accent:'#44cc66',badge_bg:'rgba(10,58,26,0.1)',clearance_bg:'#1a5a2a',clearance_color:'#fff'},
+  gold:{header:'linear-gradient(90deg,#3a2a0a 0%,#5a4a10 100%)',text:'rgba(255,230,150,0.9)',accent:'#e8c96a',badge_bg:'rgba(58,42,10,0.1)',clearance_bg:'#5a4a10',clearance_color:'#fff'},
+  teal:{header:'linear-gradient(90deg,#0a3a3a 0%,#1a5a5a 100%)',text:'rgba(180,255,255,0.9)',accent:'#44cccc',badge_bg:'rgba(10,58,58,0.1)',clearance_bg:'#1a5a5a',clearance_color:'#fff'},
+};
+const CLEARANCE_COLORS = {
+  none:{display:'none'},
+  visitor:{bg:'#4a8aff',color:'#fff',label:'VISITOR'},
+  authorized:{bg:'#44cc66',color:'#fff',label:'AUTHORIZED'},
+  restricted:{bg:'#ff8800',color:'#fff',label:'RESTRICTED'},
+  classified:{bg:'#cc44cc',color:'#fff',label:'CLASSIFIED'},
+  secret:{bg:'#cc2222',color:'#fff',label:'SECRET'},
+  tssci:{bg:'#f0a000',color:'#000',label:'TS/SCI'},
+};
+
+let currentStyle = 'corporate';
+
+function applyStyle(){
+  currentStyle = document.getElementById('f_style').value;
+  ['corporate','government','foreign'].forEach(s=>{
+    document.getElementById(`badge-${s}`).style.display = s===currentStyle?'block':'none';
+  });
+  applyColor();
+}
+
+function applyColor(){
+  const c = document.getElementById('f_color').value;
+  const C = COLORS[c];
+  if(!C) return;
+  // Corporate
+  document.getElementById('corp-header').style.background = C.header;
+  document.getElementById('corp-logo-circle').style.background = C.accent;
+  document.getElementById('corp-bottom').style.background = C.header;
+  // Government
+  document.getElementById('gov-stripe').style.background = C.header;
+  document.getElementById('gov-bottom').style.background = C.header;
+  // Foreign
+  document.getElementById('fn-header').style.background = C.header;
+  document.getElementById('fn-bottom').style.background = C.header;
+}
+
+function makeBarcode(containerId){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML='';
+  const ws=[1,2,1,1,2,1,1,1,2,1,2,1,1,2,1,1,2,1,1,1,2,1,2];
+  const hs=[100,70,100,80,90,100,60,100,80,70,100,90,80,100,70,100,80,90,100,70,100,80,90];
+  const c = currentStyle==='corporate'?'rgba(0,0,0,0.35)':'rgba(0,0,50,0.3)';
+  for(let i=0;i<23;i++){
+    const s=document.createElement('span');
+    s.style.cssText=`width:${ws[i]*0.7}px;height:${hs[i]*0.18}px;background:${c};border-radius:0.3px;align-self:flex-end;display:inline-block;`;
+    el.appendChild(s);
+  }
+}
+
+function render(){
+  const g = id=>(document.getElementById(id)||{}).value||'';
+  const first = g('f_first');
+  const last = g('f_last');
+  const fullName = `${first} ${last}`;
+  const org = g('f_org').toUpperCase();
+  const jobtitle = g('f_jobtitle');
+  const dept = g('f_dept');
+  const id = g('f_id');
+  const nationality = g('f_nationality');
+  const country = g('f_country').toUpperCase();
+
+  // Corporate
+  document.getElementById('corp-org').textContent = org;
+  document.getElementById('corp-logo-circle').textContent = org.slice(0,2);
+  document.getElementById('corp-name').textContent = fullName;
+  document.getElementById('corp-jobtitle').textContent = jobtitle;
+  document.getElementById('corp-dept').textContent = dept;
+  document.getElementById('corp-id').textContent = `ID: ${id}`;
+
+  // Government
+  document.getElementById('gov-agency').textContent = `${org} · UNITED REGIONS`;
+  document.getElementById('gov-name').textContent = `${last.toUpperCase()}, ${first.toUpperCase()}`;
+  document.getElementById('gov-title').textContent = jobtitle;
+  document.getElementById('gov-dept').textContent = `${dept}\nUnited Regions of Forma`;
+  document.getElementById('gov-id').textContent = `ID: ${id}`;
+
+  // Foreign national
+  document.getElementById('fn-agency').textContent = org;
+  document.getElementById('fn-name').textContent = fullName.toUpperCase();
+  document.getElementById('fn-title').textContent = jobtitle;
+  document.getElementById('fn-country').textContent = nationality;
+  document.getElementById('fn-nat').textContent = country;
+  document.getElementById('fn-dept').textContent = dept;
+
+  // Clearance
+  const cl = g('f_clearance');
+  const CC = CLEARANCE_COLORS[cl];
+  const corpCl = document.getElementById('corp-clearance-badge');
+  const govCl = document.getElementById('gov-clearance');
+  if(cl && cl !== 'none'){
+    corpCl.style.display='block';
+    corpCl.textContent = `● ${CC.label}`;
+    corpCl.style.color = CC.bg;
+    govCl.style.display='block';
+    govCl.textContent = CC.label;
+    govCl.style.background = CC.bg;
+    govCl.style.color = CC.color;
+    govCl.style.padding='3px 8px';
+    govCl.style.borderRadius='3px';
+    govCl.style.fontSize='8px';
+    govCl.style.fontWeight='700';
+    govCl.style.letterSpacing='2px';
+    govCl.style.fontFamily="'DM Mono',monospace";
+  } else {
+    corpCl.style.display='none';
+    govCl.style.display='none';
+  }
+
+  makeBarcode('corp-barcode');
+  makeBarcode('gov-barcode');
+  makeBarcode('fn-barcode');
+  applyColor();
+}
+
+function loadPhoto(e){
+  const file = e.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const src = ev.target.result;
+    // Set all photo boxes
+    ['corp','gov','fn'].forEach(prefix=>{
+      const img = document.getElementById(`${prefix}-img`);
+      const ph = document.getElementById(`${prefix}-ph`);
+      if(img){ img.src=src; img.style.display='block'; }
+      if(ph) ph.style.display='none';
+    });
+    document.getElementById('photoThumb').src=src;
+    document.getElementById('photoThumb').style.display='block';
+    document.getElementById('photoLabel').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+async function exportBadge(){
+  const el = document.getElementById(`badge-${currentStyle}`);
+  const canvas = await html2canvas(el,{scale:4,useCORS:true,backgroundColor:null,logging:false,allowTaint:true});
+  const link = document.createElement('a');
+  link.download = `forma-badge-${currentStyle}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+applyStyle();
+render();
+</script>
+</body>
+</html>

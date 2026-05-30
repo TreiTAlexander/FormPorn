@@ -71,7 +71,7 @@ nav{position:sticky;top:0;z-index:500;display:flex;align-items:center;justify-co
 </div>
 <div class="panel"><h3>Your Vehicle & Other Party</h3>
 <div class="fr3"><div class="fg"><label>Year / Make / Model</label><input id="ai-veh" value="2022 Toyota Camry LE" oninput="update()"></div><div class="fg"><label>License Plate</label><input id="ai-plate" value="NV-ABC-1234" oninput="update()"></div><div class="fg"><label>VIN</label><input id="ai-vin" value="4T1B11HK5NU123456" oninput="update()"></div></div>
-<div class="fr3"><div class="fg"><label>Other Party Name</label><input id="ai-other-name" value="Diana Chen" oninput="update()"></div><div class="fg"><label>Other Party Policy #</label><input id="ai-other-policy" value="GEICO-NV-554321" oninput="update()"></div><div class="fg"><label>Other Party Vehicle</label><input id="ai-other-veh" value="2019 Honda Accord EX" oninput="update()"></div></div>
+<div class="fr3"><div class="fg"><label>Other Party Name</label><input id="ai-other-name" value="Forma Papeston" oninput="update()"></div><div class="fg"><label>Other Party Policy #</label><input id="ai-other-policy" value="GEICO-NV-554321" oninput="update()"></div><div class="fg"><label>Other Party Vehicle</label><input id="ai-other-veh" value="2019 Honda Accord EX" oninput="update()"></div></div>
 <div class="fr2"><div class="fg"><label>Estimated Repair Cost</label><input id="ai-cost" value="$8,450.00" oninput="update()"></div><div class="fg"><label>Witness Name & Contact</label><input id="ai-witness" value="Thomas Park — (702) 555-0199" oninput="update()"></div></div>
 </div>
 
@@ -151,72 +151,4 @@ document.getElementById('auto-ins-doc').innerHTML=`
 <div class="doc-ftr"><span>AUTO INSURANCE CLAIM · ${claim}</span><span>${ins}</span><span>FORM PORN · ENTERTAINMENT ONLY</span></div>
 </div>`; }
 
-update();</script>
-<script src="access.js"></script>
-<script>
-// FormPorn Access Gate — injected by stabilization script
-function _currentForm() {
-  return window.location.pathname.split('/').pop() || 'index.html';
-}
-function downloadPDF(docId) {
-  FP.requireAccess(_currentForm(), function() { _fpDoPDF(docId); });
-}
-function downloadPNG(docId) {
-  FP.requireAccess(_currentForm(), function() { _fpDoPNG(docId); });
-}
-function downloadJPEG(docId) {
-  FP.requireAccess(_currentForm(), function() { _fpDoJPEG(docId); });
-}
-// Legacy aliases used in older forms
-function dlPDF(docId) { downloadPDF(docId); }
-function dlPNG(docId) { downloadPNG(docId); }
-function dlJPEG(docId) { downloadJPEG(docId); }
-
-function _fpDoPDF(docId) {
-  const el = document.getElementById(docId);
-  if (!el) { window.print(); return; }
-  const allStyles = Array.from(document.styleSheets).map(s => {
-    try { return Array.from(s.cssRules).map(r => r.cssText).join('\n'); } catch(e) { return ''; }
-  }).join('\n');
-  const fontLink = document.querySelector('link[href*="fonts.googleapis"]');
-  const w = window.open('', '_blank', 'width=900,height=700');
-  w.document.write('<!DOCTYPE html><html><head><title>Form Porn</title>');
-  if (fontLink) w.document.write(fontLink.outerHTML);
-  w.document.write('<style>*{box-sizing:border-box;margin:0;padding:0;}body{background:#ddd;display:flex;justify-content:center;padding:30px;}@media print{body{background:white;padding:0;}@page{margin:0.5in;}}' + allStyles + '</style></head><body>');
-  w.document.write(el.outerHTML);
-  w.document.write('<scr'+'ipt>document.fonts.ready.then(()=>{setTimeout(()=>window.print(),800)});<\/scr'+'ipt></body></html>');
-  w.document.close();
-}
-function _fpDoPNG(docId) {
-  const el = document.getElementById(docId);
-  if (!el) { alert('Generate a document first.'); return; }
-  function capture() {
-    html2canvas(el, {scale:3, useCORS:true, backgroundColor:'#ffffff', logging:false}).then(c => {
-      const a = document.createElement('a'); a.download = 'formporn.png';
-      a.href = c.toDataURL('image/png', 1.0); a.click();
-    }).catch(() => alert('PNG failed. Use PDF instead.'));
-  }
-  if (typeof html2canvas === 'undefined') {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    s.onload = capture; document.head.appendChild(s);
-  } else { capture(); }
-}
-function _fpDoJPEG(docId) {
-  const el = document.getElementById(docId);
-  if (!el) { alert('Generate a document first.'); return; }
-  function capture() {
-    html2canvas(el, {scale:2, useCORS:true, backgroundColor:'#ffffff', logging:false}).then(c => {
-      const a = document.createElement('a'); a.download = 'formporn.jpg';
-      a.href = c.toDataURL('image/jpeg', 0.95); a.click();
-    }).catch(() => alert('JPEG failed. Use PDF instead.'));
-  }
-  if (typeof html2canvas === 'undefined') {
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
-    s.onload = capture; document.head.appendChild(s);
-  } else { capture(); }
-}
-</script>
-
-</body></html>
+update();</script></body></html>
